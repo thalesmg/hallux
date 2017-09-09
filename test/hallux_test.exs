@@ -164,4 +164,68 @@ defmodule HalluxTest do
     end
   end
 
+  describe "append/2" do
+    test "empty empty" do
+      assert empty() == Hallux.append(empty(), empty())
+    end
+
+    test "empty single" do
+      assert single(1) == Hallux.append(single(1), empty())
+      assert single(1) == Hallux.append(empty(), single(1))
+    end
+
+    test "single single" do
+      assert deep(one(1), empty(), one(2)) == Hallux.append(single(1), single(2))
+    end
+
+    test "single deep" do
+      deep = Hallux.to_tree(1..10)
+
+      assert deep(
+        three(1,2,3),
+        deep(one(node3(4,5,6)), empty(), one(node3(7,8,9))),
+        two(10, :ok)
+      ) == Hallux.append(deep, single(:ok))
+
+      assert deep(
+        four(:ok,1,2,3),
+        deep(one(node3(4,5,6)), empty(), one(node3(7,8,9))),
+        one(10)
+      ) == Hallux.append(single(:ok), deep)
+    end
+
+    test "deep deep" do
+      deep1 = Hallux.to_tree(1..10)
+      deep2 = Hallux.to_tree(11..20)
+
+      assert deep(
+        three(1,2,3),
+        deep(
+          one(node3(4,5,6)),
+          deep(
+            one(node2(node3(7,8,9), node2(10,11))),
+            empty(),
+            one(node2(node2(12,13), node3(14,15,16)))
+          ),
+          one(node3(17,18,19))
+        ),
+        one(20)
+      ) == Hallux.append(deep1, deep2)
+
+      assert deep(
+        three(11,12,13),
+        deep(
+          one(node3(14,15,16)),
+          deep(
+            one(node2(node3(17,18,19), node2(20,1))),
+            empty(),
+            one(node2(node2(2,3), node3(4,5,6)))
+          ),
+          one(node3(7,8,9))
+        ),
+        one(10)
+      ) == Hallux.append(deep2, deep1)
+    end
+  end
+
 end

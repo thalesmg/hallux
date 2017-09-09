@@ -133,4 +133,29 @@ defmodule Hallux do
     end
   end
 
+  defp app3(%__MODULE__.Empty{}, ts, xs),
+    do: reduceL(xs, ts)
+  defp app3(xs, ts, %__MODULE__.Empty{}),
+    do: reduceR(xs, ts)
+  defp app3(%__MODULE__.Single{v: v}, ts, xs),
+    do: reduceL(xs, ts) |> cons(v)
+  defp app3(xs, ts, %__MODULE__.Single{v: v}),
+    do: reduceR(xs, ts) |> snoc(v)
+  defp app3(%__MODULE__.Deep{pr: pr1, m: m1, sf: sf1},
+      ts,
+      %__MODULE__.Deep{pr: pr2, m: m2, sf: sf2}) do
+    lsf1 = Enum.to_list(sf1)
+    lpr2 = Enum.to_list(pr2)
+
+    deep(
+      pr1,
+      app3(m1, Node.to_nodes(lsf1 ++ ts ++ lpr2), m2),
+      sf2
+    )
+  end
+
+  def append(tree1, tree2) do
+    app3(tree1, [], tree2)
+  end
+
 end
