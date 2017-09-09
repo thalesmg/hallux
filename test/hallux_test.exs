@@ -67,6 +67,32 @@ defmodule HalluxTest do
       } = Hallux.viewL(tail2)
     end
   end
+
+  describe "viewR/1" do
+    test "Empty tree" do
+      assert Views.nilR() == Hallux.viewR(empty())
+    end
+
+    test "Single tree" do
+      assert Views.consR(1, empty()) == Hallux.viewR(single(1))
+    end
+
+    test "Deep tree" do
+      tree = Hallux.to_tree(1..24)
+      assert %Views.ConsR{
+        hd: 24,
+        tl: %Hallux.Deep{sf: %Digits.Three{a: 21, b: 22, c: 23}} = tail
+      } = Hallux.viewR(tree)
+
+      assert %Views.ConsR{
+        hd: 23,
+        tl: %Hallux.Deep{sf: %Digits.Two{a: 21, b: 22}} = tail2
+      } = Hallux.viewR(tail)
+
+      assert %Views.ConsR{
+        hd: 22,
+        tl: %Hallux.Deep{sf: %Digits.One{a: 21}}
+      } = Hallux.viewR(tail2)
     end
   end
 

@@ -82,4 +82,55 @@ defmodule Hallux do
     end
   end
 
+  def empty?(tree) do
+    case viewL tree do
+      %Views.NilL{} -> True
+      %Views.ConsL{} -> False
+    end
+  end
+
+  def headL(tree) do
+    case viewL tree do
+      %Views.ConsL{hd: hd} -> hd
+    end
+  end
+
+  def tailL(tree) do
+    case viewL tree do
+      %Views.ConsL{tl: tl} -> tl
+    end
+  end
+
+  def headR(tree) do
+    case viewR tree do
+      %Views.ConsR{hd: hd} -> hd
+    end
+  end
+
+  def tailR(tree) do
+    case viewR tree do
+      %Views.ConsR{tl: tl} -> tl
+    end
+  end
+
+  def viewR(%__MODULE__.Empty{}), do: Views.nilR()
+  def viewR(%__MODULE__.Single{v: v}), do: Views.consR(v, empty())
+  def viewR(%__MODULE__.Deep{pr: pr, m: m, sf: sf}) do
+    case sf do
+      %One{a: a} ->
+        case viewR m do
+          %Views.NilR{} ->
+            Views.consR(a, to_tree(pr))
+          %Views.ConsR{hd: hd, tl: tl} ->
+            Views.consR(a, deep(pr, tl, Node.to_digit(hd)))
+        end
+      %Two{a: a, b: b} ->
+        Views.consR(b, deep(pr, m, one(a)))
+      %Three{a: a, b: b, c: c} ->
+        Views.consR(c, deep(pr, m, two(a,b)))
+      %Four{a: a, b: b, c: c, d: d} ->
+        Views.consR(d, deep(pr, m, three(a,b,c)))
+    end
+  end
+
 end
