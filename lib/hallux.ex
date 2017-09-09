@@ -53,7 +53,7 @@ defmodule Hallux do
     %__MODULE__.Deep{pr: pr, m: m, sf: sf, __size__: s}
   end
 
-  def deepL(digit, m, sf, z \\ 0, measure \\ measure_fn(), reduce \\ reduce_fn())
+  def deepL(maybe_pr, m, sf, z \\ 0, measure \\ measure_fn(), reduce \\ reduce_fn())
   def deepL(nil, m, sf, z, measure, reduce) do
     case viewL m do
       %Views.NilL{} ->
@@ -64,6 +64,19 @@ defmodule Hallux do
   end
   def deepL(digit, m, sf, z, measure, reduce) do
     deep(digit, m, sf, z, measure, reduce)
+  end
+
+  def deepR(pr, m, maybe_sf, z \\ 0, measure \\ measure_fn(), reduce \\ reduce_fn())
+  def deepR(pr, m, nil, z, measure, reduce) do
+    case viewR m do
+      %Views.NilR{} ->
+        to_tree(pr)
+      %Views.ConsR{hd: hd, tl: tl} ->
+        deep(pr, tl, Node.to_digit(hd))
+    end
+  end
+  def deepR(pr, m, digit, z, measure, reduce) do
+    deep(pr, m, digit, z, measure, reduce)
   end
 
   def one(a), do: %One{a: a}
@@ -175,12 +188,8 @@ defmodule Hallux do
   def viewR(%__MODULE__.Deep{pr: pr, m: m, sf: sf}) do
     case sf do
       %One{a: a} ->
-        case viewR m do
-          %Views.NilR{} ->
-            Views.consR(a, to_tree(pr))
-          %Views.ConsR{hd: hd, tl: tl} ->
-            Views.consR(a, deep(pr, tl, Node.to_digit(hd)))
-        end
+        rest = deepR(pr, m, nil)
+        Views.consR(a, rest)
       %Two{a: a, b: b} ->
         Views.consR(b, deep(pr, m, one(a)))
       %Three{a: a, b: b, c: c} ->
