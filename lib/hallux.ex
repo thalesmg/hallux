@@ -1,7 +1,7 @@
 defmodule Hallux do
   alias __MODULE__.Views
   alias __MODULE__.Digits.{One, Two, Three, Four}
-  alias __MODULE__.{Node2, Node3}
+  alias __MODULE__.{Node, Node2, Node3}
 
   defmodule Empty, do: (defstruct [])
   defmodule Single, do: (defstruct [:v])
@@ -71,7 +71,7 @@ defmodule Hallux do
           %Views.NilL{} ->
             Views.consL(a, to_tree(sf))
           %Views.ConsL{hd: hd, tl: tl} ->
-            Views.consL(a, deep(one(hd), tl, sf))
+            Views.consL(a, deep(Node.to_digit(hd), tl, sf))
         end
       %Two{a: a, b: b} ->
         Views.consL(a, deep(one(b), m, sf))

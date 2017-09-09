@@ -58,8 +58,13 @@ defmodule HalluxTest do
 
       assert %Views.ConsL{
         hd: 2,
-        tl: %Hallux.Deep{pr: %Digits.One{a: %Node3{l: 3, m: 4, r: 5}}}
+        tl: %Hallux.Deep{pr: %Digits.Three{a: 3, b: 4, c: 5}} = tail2
       } = Hallux.viewL(tail)
+
+      assert %Views.ConsL{
+        hd: 3,
+        tl: %Hallux.Deep{pr: %Digits.Two{a: 4, b: 5}}
+      } = Hallux.viewL(tail2)
     end
   end
     end
