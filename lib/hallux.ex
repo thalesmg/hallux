@@ -63,7 +63,7 @@ defmodule Hallux do
   end
 
   def viewL(%__MODULE__.Empty{}), do: Views.nilL()
-  def viewL(%__MODULE__.Single{v: v}), do: Views.consL(v, Views.nilL)
+  def viewL(%__MODULE__.Single{v: v}), do: Views.consL(v, empty())
   def viewL(%__MODULE__.Deep{pr: pr, m: m, sf: sf}) do
     case pr do
       %One{a: a} ->

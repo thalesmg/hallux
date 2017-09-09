@@ -2,7 +2,7 @@ defmodule HalluxTest do
   use ExUnit.Case
 
   alias Hallux
-  alias Hallux.{Digits, Views}
+  alias Hallux.{Digits, Node2, Node3, Views}
 
   import Hallux, only: [
     empty: 0,
@@ -46,15 +46,22 @@ defmodule HalluxTest do
     end
 
     test "Single tree" do
-      assert Views.consL(1, Views.nilL) == Hallux.viewL(single(1))
+      assert Views.consL(1, empty()) == Hallux.viewL(single(1))
     end
 
     test "Deep tree" do
       tree = Hallux.to_tree(1..24)
       assert %Views.ConsL{
         hd: 1,
-        tl: %Hallux.Deep{pr: %Digits.One{a: 2}}
+        tl: %Hallux.Deep{pr: %Digits.One{a: 2}} = tail
       } = Hallux.viewL(tree)
+
+      assert %Views.ConsL{
+        hd: 2,
+        tl: %Hallux.Deep{pr: %Digits.One{a: %Node3{l: 3, m: 4, r: 5}}}
+      } = Hallux.viewL(tail)
+    end
+  end
     end
   end
 
