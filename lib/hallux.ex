@@ -53,6 +53,19 @@ defmodule Hallux do
     %__MODULE__.Deep{pr: pr, m: m, sf: sf, __size__: s}
   end
 
+  def deepL(digit, m, sf, z \\ 0, measure \\ measure_fn(), reduce \\ reduce_fn())
+  def deepL(nil, m, sf, z, measure, reduce) do
+    case viewL m do
+      %Views.NilL{} ->
+        to_tree(sf)
+      %Views.ConsL{hd: hd, tl: tl} ->
+        deep(Node.to_digit(hd), tl, sf)
+    end
+  end
+  def deepL(digit, m, sf, z, measure, reduce) do
+    deep(digit, m, sf, z, measure, reduce)
+  end
+
   def one(a), do: %One{a: a}
   def two(a, b), do: %Two{a: a, b: b}
   def three(a, b, c), do: %Three{a: a, b: b, c: c}
@@ -115,12 +128,8 @@ defmodule Hallux do
   def viewL(%__MODULE__.Deep{pr: pr, m: m, sf: sf}) do
     case pr do
       %One{a: a} ->
-        case viewL m do
-          %Views.NilL{} ->
-            Views.consL(a, to_tree(sf))
-          %Views.ConsL{hd: hd, tl: tl} ->
-            Views.consL(a, deep(Node.to_digit(hd), tl, sf))
-        end
+        rest = deepL(nil, m, sf)
+        Views.consL(a, rest)
       %Two{a: a, b: b} ->
         Views.consL(a, deep(one(b), m, sf))
       %Three{a: a, b: b, c: c} ->
