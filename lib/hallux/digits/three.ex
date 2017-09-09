@@ -12,4 +12,14 @@ defmodule Hallux.Digits.Three do
     def reduce(%Three{a: a, b: b, c: c}, cmd, fun),
       do: Enumerable.reduce([a,b,c], cmd, fun)
   end
+
+  defimpl Hallux.Measured do
+    alias Hallux.Digits.Three
+    alias Hallux.Measured
+
+    def size(%Three{} = three, zero, measure_fn, reduce_fn)
+      when is_function(measure_fn, 1)
+      and is_function(reduce_fn, 2),
+      do: Enum.to_list(three) |> Measured.size(zero, measure_fn, reduce_fn)
+  end
 end

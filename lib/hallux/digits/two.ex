@@ -11,4 +11,14 @@ defmodule Hallux.Digits.Two do
     def reduce(%Two{a: a, b: b}, cmd, fun),
       do: Enumerable.reduce([a,b], cmd, fun)
   end
+
+  defimpl Hallux.Measured do
+    alias Hallux.Digits.Two
+    alias Hallux.Measured
+
+    def size(%Two{} = two, zero, measure_fn, reduce_fn)
+      when is_function(measure_fn, 1)
+      and is_function(reduce_fn, 2),
+      do: Enum.to_list(two) |> Measured.size(zero, measure_fn, reduce_fn)
+  end
 end

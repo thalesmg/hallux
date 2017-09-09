@@ -3,21 +3,69 @@ defmodule Hallux do
   alias __MODULE__.Digits.{One, Two, Three, Four}
   alias __MODULE__.{Node, Node2, Node3}
 
-  defmodule Empty, do: (defstruct [])
-  defmodule Single, do: (defstruct [:v])
-  defmodule Deep, do: (defstruct [:pr, :m, :sf])
+  alias __MODULE__.Measured
+
+  defmodule Empty do
+    defstruct []
+
+    defimpl Hallux.Measured do
+      alias Hallux.Empty
+
+      def size(empty, z, _measure, _reduce),
+        do: z
+    end
+  end
+
+  defmodule Single do
+    defstruct [:v]
+
+    defimpl Hallux.Measured do
+      alias Hallux.Single
+
+      def size(%Single{v: v}, z, measure, reduce),
+        do: measure.(v) |> reduce.(z)
+    end
+  end
+
+  defmodule Deep do
+    defstruct [:pr, :m, :sf, :__size__]
+
+    defimpl Hallux.Measured do
+      alias Hallux.Deep
+
+      def size(%Deep{__size__: s}, _, _, _), do: s
+    end
+  end
+
+  defp measure_fn, do: fn _ -> 1 end
+  defp reduce_fn, do: &+/2
 
   def empty(), do: %__MODULE__.Empty{}
   def single(x), do: %__MODULE__.Single{v: x}
-  def deep(pr, m, sf), do: %__MODULE__.Deep{pr: pr, m: m, sf: sf}
+  def deep(pr, m, sf, z \\ 0, measure \\ measure_fn(), reduce \\ reduce_fn()) do
+    s = [
+      Measured.size(pr, z, measure, reduce),
+      Measured.size(m, z, measure, reduce),
+      Measured.size(sf, z, measure, reduce)
+    ]
+    |> Measured.size(z, & &1, reduce)
+
+    %__MODULE__.Deep{pr: pr, m: m, sf: sf, __size__: s}
+  end
 
   def one(a), do: %One{a: a}
   def two(a, b), do: %Two{a: a, b: b}
   def three(a, b, c), do: %Three{a: a, b: b, c: c}
   def four(a, b, c, d), do: %Four{a: a, b: b, c: c, d: d}
 
-  def node2(l, r), do: %Node2{l: l, r: r}
-  def node3(l, m, r), do: %Node3{l: l, m: m, r: r}
+  def node2(l, r, z \\ 0, measure \\ measure_fn(), reduce \\ reduce_fn()) do
+    s = Measured.size([l, r], z, measure, reduce)
+    %Node2{l: l, r: r, __size__: s}
+  end
+  def node3(l, m, r, z \\ 0, measure \\ measure_fn(), reduce \\ reduce_fn()) do
+    s = Measured.size([l, m, r], z, measure, reduce)
+    %Node3{l: l, m: m, r: r, __size__: s}
+  end
 
   def cons(%__MODULE__.Empty{}, y), do: single(y)
   def cons(%__MODULE__.Single{v: v}, y), do: deep(one(y), empty(), one(v))

@@ -11,4 +11,12 @@ defmodule Hallux.Digits.One do
     def reduce(%One{a: a}, cmd, fun),
       do: Enumerable.reduce([a], cmd, fun)
   end
+
+  defimpl Hallux.Measured do
+    alias Hallux.Digits.One
+
+    def size(%One{a: a}, zero, measure_fn, _reduce_fn)
+      when is_function(measure_fn, 1),
+      do: measure_fn.(a)
+  end
 end
