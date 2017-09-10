@@ -4,6 +4,7 @@ defmodule Hallux.Split do
   alias Hallux
   alias Hallux.{Empty, Single, Deep}
   alias Hallux.Digits
+  alias Hallux.Node
   alias Hallux.Digits.{One, Two, Three, Four}
   alias Hallux.Measured
 
@@ -33,37 +34,30 @@ defmodule Hallux.Split do
   def split_tree(predicate, acc, %Deep{} = tree, zero, measure_fn, reduce_fn) do
     %Deep{pr: pr, m: m, sf: sf} = tree
     vpr = Measured.size(pr, zero, measure_fn, reduce_fn)
+    |> reduce_fn.(acc)
     vm =
-      vpr
-      |> reduce_fn.(Measured.size(m, zero, measure_fn, reduce_fn))
+      Measured.size(m, zero, measure_fn, reduce_fn)
+      |> reduce_fn.(vpr)
 
     cond do
       predicate.(vpr) ->
         %__MODULE__{l: l, x: x, r: r} = split_digit(
             predicate, acc, pr, zero, measure_fn, reduce_fn)
-        case r do
-          [] ->
-            r_ = deepL(nil, m, sf, zero, measure_fn, reduce_fn)
 
-            %__MODULE__{l: Hallux.to_tree(l), x: x, r: r_}
-          rest ->
-            rest = Digits.to_digits(rest)
-            r_ = deepL(rest, m, sf, zero, measure_fn, reduce_fn)
-
-            %__MODULE__{l: Hallux.to_tree(l), x: x, r: r_}
-        end
+        r_ = deepL(r, m, sf, zero, measure_fn, reduce_fn)
+        %__MODULE__{l: Hallux.to_tree(l), x: x, r: r_}
 
       predicate.(vm) ->
         %__MODULE__{l: ml, x: xs, r: mr} = split_tree(
             predicate, vpr, m, zero, measure_fn, reduce_fn)
         ml_acc =
-          vpr
-          |> reduce_fn.(Measured.size(ml, zero, measure_fn, reduce_fn))
+          Measured.size(ml, zero, measure_fn, reduce_fn)
+          |> reduce_fn.(vpr)
         %__MODULE__{l: l, x: x, r: r} = split_digit(
-            predicate, ml_acc, Digits.to_digits(xs), zero, measure_fn, reduce_fn)
+            predicate, ml_acc, Node.to_digit(xs), zero, measure_fn, reduce_fn)
 
-        r_ = deepR(pr, ml, l, zero, measure_fn, reduce_fn)
-        l_ = deepL(r, mr, sf, zero, measure_fn, reduce_fn)
+        l_ = deepR(pr, ml, l, zero, measure_fn, reduce_fn)
+        r_ = deepL(r, mr, sf, zero, measure_fn, reduce_fn)
         %__MODULE__{l: l_, x: x, r: r_}
 
 
@@ -80,7 +74,7 @@ defmodule Hallux.Split do
     do: %__MODULE__{l: [], x: a, r: []}
   def split_digit(predicate, acc, digit, zero, measure_fn, reduce_fn) do
     {a, rest} = Digits.popL(digit)
-    acc = measure_fn.(a) |> reduce_fn.(acc)
+    acc = Measured.size(a, zero, measure_fn, reduce_fn) |> reduce_fn.(acc)
     if predicate.(acc) do
       %__MODULE__{l: [], x: a, r: rest}
     else

@@ -1,5 +1,6 @@
 defmodule Hallux do
   alias __MODULE__.Views
+  alias __MODULE__.Digits
   alias __MODULE__.Digits.{One, Two, Three, Four}
   alias __MODULE__.{Node, Node2, Node3}
 
@@ -21,9 +22,10 @@ defmodule Hallux do
 
     defimpl Hallux.Measured do
       alias Hallux.Single
+      alias Hallux.Measured
 
       def size(%Single{v: v}, z, measure, reduce),
-        do: measure.(v) |> reduce.(z)
+        do: Measured.size(v, z, measure, reduce)
     end
   end
 
@@ -48,35 +50,35 @@ defmodule Hallux do
       Measured.size(m, z, measure, reduce),
       Measured.size(sf, z, measure, reduce)
     ]
-    |> Measured.size(z, & &1, reduce)
+    |> Enum.reduce(z, reduce)
 
     %__MODULE__.Deep{pr: pr, m: m, sf: sf, __size__: s}
   end
 
   def deepL(maybe_pr, m, sf, z \\ 0, measure \\ measure_fn(), reduce \\ reduce_fn())
-  def deepL(nil, m, sf, z, measure, reduce) do
+  def deepL([], m, sf, z, measure, reduce) do
     case viewL m do
       %Views.NilL{} ->
-        to_tree(sf)
+        to_tree(sf, z, measure, reduce)
       %Views.ConsL{hd: hd, tl: tl} ->
-        deep(Node.to_digit(hd), tl, sf)
+        deep(Node.to_digit(hd), tl, sf, z, measure, reduce)
     end
   end
   def deepL(digit, m, sf, z, measure, reduce) do
-    deep(digit, m, sf, z, measure, reduce)
+    deep(Digits.to_digits(digit), m, sf, z, measure, reduce)
   end
 
   def deepR(pr, m, maybe_sf, z \\ 0, measure \\ measure_fn(), reduce \\ reduce_fn())
-  def deepR(pr, m, nil, z, measure, reduce) do
+  def deepR(pr, m, [], z, measure, reduce) do
     case viewR m do
       %Views.NilR{} ->
-        to_tree(pr)
+        to_tree(pr, z, measure, reduce)
       %Views.ConsR{hd: hd, tl: tl} ->
-        deep(pr, tl, Node.to_digit(hd))
+        deep(pr, tl, Node.to_digit(hd), z, measure, reduce)
     end
   end
   def deepR(pr, m, digit, z, measure, reduce) do
-    deep(pr, m, digit, z, measure, reduce)
+    deep(pr, m, Digits.to_digits(digit), z, measure, reduce)
   end
 
   def one(a), do: %One{a: a}
@@ -93,47 +95,55 @@ defmodule Hallux do
     %Node3{l: l, m: m, r: r, __size__: s}
   end
 
-  def cons(%__MODULE__.Empty{}, y), do: single(y)
-  def cons(%__MODULE__.Single{v: v}, y), do: deep(one(y), empty(), one(v))
-  def cons(%__MODULE__.Deep{pr: pr, m: m, sf: sf}, y) do
+  def cons(tree, elem, zero \\ 0, measure \\ measure_fn(), reduce \\ reduce_fn())
+  def cons(%__MODULE__.Empty{}, y, _, _, _), do: single(y)
+  def cons(%__MODULE__.Single{v: v}, y, zero, measure, reduce),
+    do: deep(one(y), empty(), one(v), zero, measure, reduce)
+  def cons(%__MODULE__.Deep{pr: pr, m: m, sf: sf}, y, zero, measure, reduce) do
     case pr do
       %One{a: a} ->
-        deep(two(y, a), m, sf)
+        deep(two(y, a), m, sf, zero, measure, reduce)
       %Two{a: a, b: b} ->
-        deep(three(y, a, b), m, sf)
+        deep(three(y, a, b), m, sf, zero, measure, reduce)
       %Three{a: a, b: b, c: c} ->
-        deep(four(y, a, b, c), m, sf)
+        deep(four(y, a, b, c), m, sf, zero, measure, reduce)
       %Four{a: a, b: b, c: c, d: d} ->
-        deep(two(y, a), cons(m, node3(b, c, d)), sf)
+        deep(two(y, a),
+          cons(m, node3(b, c, d, zero, measure, reduce), zero, measure, reduce),
+          sf, zero, measure, reduce)
     end
   end
 
-  def snoc(%__MODULE__.Empty{}, y), do: single(y)
-  def snoc(%__MODULE__.Single{v: v}, y), do: deep(one(v), empty(), one(y))
-  def snoc(%__MODULE__.Deep{pr: pr, m: m, sf: sf}, y) do
+  def snoc(tree, elem, zero \\ 0, measure \\ measure_fn(), reduce \\ reduce_fn())
+  def snoc(%__MODULE__.Empty{}, y, _, _, _), do: single(y)
+  def snoc(%__MODULE__.Single{v: v}, y, zero, measure, reduce),
+    do: deep(one(v), empty(), one(y), zero, measure, reduce)
+  def snoc(%__MODULE__.Deep{pr: pr, m: m, sf: sf}, y, zero, measure, reduce) do
     case sf do
       %One{a: a} ->
-        deep(pr, m, two(a, y))
+        deep(pr, m, two(a, y), zero, measure, reduce)
       %Two{a: a, b: b} ->
-        deep(pr, m, three(a, b, y))
+        deep(pr, m, three(a, b, y), zero, measure, reduce)
       %Three{a: a, b: b, c: c} ->
-        deep(pr, m, four(a, b, c, y))
+        deep(pr, m, four(a, b, c, y), zero, measure, reduce)
       %Four{a: a, b: b, c: c, d: d} ->
-        deep(pr, snoc(m, node3(a, b, c)), two(d, y))
+        deep(pr,
+          snoc(m, node3(a, b, c, zero, measure, reduce), zero, measure, reduce),
+          two(d, y), zero, measure, reduce)
     end
   end
 
-  def reduceL(finger_tree, xs) do
+  def reduceL(finger_tree, xs, zero \\ 0, measure \\ measure_fn(), reduce \\ reduce_fn()) do
     xs = Enum.reverse(xs)
-    Enum.reduce(xs, finger_tree, & cons(&2, &1))
+    Enum.reduce(xs, finger_tree, & cons(&2, &1, zero, measure, reduce))
   end
 
-  def reduceR(finger_tree, xs) do
-    Enum.reduce(xs, finger_tree, & snoc(&2, &1))
+  def reduceR(finger_tree, xs, zero \\ 0, measure \\ measure_fn(), reduce \\ reduce_fn()) do
+    Enum.reduce(xs, finger_tree, & snoc(&2, &1, zero, measure, reduce))
   end
 
-  def to_tree(xs) do
-    reduceL(empty(), xs)
+  def to_tree(xs, zero \\ 0, measure \\ measure_fn(), reduce \\ reduce_fn()) do
+    reduceL(empty(), xs, zero, measure, reduce)
   end
 
   def viewL(%__MODULE__.Empty{}), do: Views.nilL()
@@ -141,7 +151,7 @@ defmodule Hallux do
   def viewL(%__MODULE__.Deep{pr: pr, m: m, sf: sf}) do
     case pr do
       %One{a: a} ->
-        rest = deepL(nil, m, sf)
+        rest = deepL([], m, sf)
         Views.consL(a, rest)
       %Two{a: a, b: b} ->
         Views.consL(a, deep(one(b), m, sf))
@@ -188,7 +198,7 @@ defmodule Hallux do
   def viewR(%__MODULE__.Deep{pr: pr, m: m, sf: sf}) do
     case sf do
       %One{a: a} ->
-        rest = deepR(pr, m, nil)
+        rest = deepR(pr, m, [])
         Views.consR(a, rest)
       %Two{a: a, b: b} ->
         Views.consR(b, deep(pr, m, one(a)))

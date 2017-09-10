@@ -18,5 +18,9 @@ defmodule Hallux.Digits do
   def to_digits([a,b]), do: %Two{a: a, b: b}
   def to_digits([a,b,c]), do: %Three{a: a, b: b, c: c}
   def to_digits([a,b,c,d]), do: %Four{a: a, b: b, c: c, d: d}
+  def to_digits(%One{} = digit), do: digit
+  def to_digits(%Two{} = digit), do: digit
+  def to_digits(%Three{} = digit), do: digit
+  def to_digits(%Four{} = digit), do: digit
 
 end

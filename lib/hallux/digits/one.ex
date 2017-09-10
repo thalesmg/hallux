@@ -14,9 +14,10 @@ defmodule Hallux.Digits.One do
 
   defimpl Hallux.Measured do
     alias Hallux.Digits.One
+    alias Hallux.Measured
 
-    def size(%One{a: a}, zero, measure_fn, _reduce_fn)
+    def size(%One{a: a}, zero, measure_fn, reduce_fn)
       when is_function(measure_fn, 1),
-      do: measure_fn.(a)
+      do: Measured.size(a, zero, measure_fn, reduce_fn)
   end
 end
