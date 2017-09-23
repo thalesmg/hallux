@@ -191,4 +191,19 @@ defmodule Hallux.SeqTest do
     end
   end
 
+  describe "Traversal" do
+    setup do
+      seq = Seq.new(1..100)
+      {:ok, seq: seq}
+    end
+
+    test "left", %{seq: seq} do
+      assert Enum.to_list(1..100) == Enum.to_list(Seq.viewL(seq))
+    end
+
+    test "right", %{seq: seq} do
+      assert Enum.to_list(100..1) == Enum.to_list(Seq.viewR(seq))
+    end
+  end
+
 end

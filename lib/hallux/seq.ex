@@ -4,6 +4,7 @@ defmodule Hallux.Seq do
 
   alias Hallux
   alias Hallux.Split
+  alias Hallux.Seq.Views
 
   def new() do
     %__MODULE__{__tree__: Hallux.empty()}
@@ -102,6 +103,24 @@ defmodule Hallux.Seq do
              %__MODULE__{__tree__: tree2}) do
     Hallux.append(tree1, tree2, zero(), &measure_fn/1, &reduce_fn/2)
     |> new()
+  end
+
+  def viewL(%__MODULE__{__tree__: tree}) do
+    case Hallux.viewL(tree) do
+      %Hallux.Views.NilL{} ->
+        %Views.NilL{}
+      %Hallux.Views.ConsL{hd: hd, tl: tl} ->
+        %Views.ConsL{hd: hd, tl: new(tl)}
+    end
+  end
+
+  def viewR(%__MODULE__{__tree__: tree}) do
+    case Hallux.viewR(tree) do
+      %Hallux.Views.NilR{} ->
+        %Views.NilR{}
+      %Hallux.Views.ConsR{hd: hd, tl: tl} ->
+        %Views.ConsR{hd: hd, tl: new(tl)}
+    end
   end
 
   defp measure_fn(_), do: 1
