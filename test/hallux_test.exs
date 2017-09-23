@@ -247,6 +247,18 @@ defmodule HalluxTest do
         one(10)
       ) == Hallux.append(deep2, deep1)
     end
+
+    test "different measure" do
+      zero = 0
+      mfn = fn _ -> 10 end
+      rfn = &+/2
+      tree1 = Hallux.to_tree(1..5, zero, mfn, rfn)
+      tree2 = Hallux.to_tree(6..10, zero, mfn, rfn)
+      appended = Hallux.append(tree1, tree2, zero, mfn, rfn)
+
+      assert 100 == Hallux.Measured.size(appended, zero, mfn, rfn)
+      assert Enum.to_list(1..10) == Hallux.to_list(appended)
+    end
   end
 
 end

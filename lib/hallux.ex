@@ -133,17 +133,18 @@ defmodule Hallux do
     end
   end
 
-  def reduceL(finger_tree, xs, zero \\ 0, measure \\ measure_fn(), reduce \\ reduce_fn()) do
+  def reduceL(finger_tree, xs, fun) do
     xs = Enum.reverse(xs)
-    Enum.reduce(xs, finger_tree, & cons(&2, &1, zero, measure, reduce))
+    Enum.reduce(xs, finger_tree, fun)
   end
 
-  def reduceR(finger_tree, xs, zero \\ 0, measure \\ measure_fn(), reduce \\ reduce_fn()) do
-    Enum.reduce(xs, finger_tree, & snoc(&2, &1, zero, measure, reduce))
+  def reduceR(finger_tree, xs, fun) do
+    Enum.reduce(xs, finger_tree, fun)
   end
 
   def to_tree(xs, zero \\ 0, measure \\ measure_fn(), reduce \\ reduce_fn()) do
-    reduceL(empty(), xs, zero, measure, reduce)
+    fun = & cons(&2, &1, zero, measure, reduce)
+    reduceL(empty(), xs, fun)
   end
 
   def to_list(tree) do
@@ -217,29 +218,42 @@ defmodule Hallux do
     end
   end
 
-  defp app3(%__MODULE__.Empty{}, ts, xs),
-    do: reduceL(xs, ts)
-  defp app3(xs, ts, %__MODULE__.Empty{}),
-    do: reduceR(xs, ts)
-  defp app3(%__MODULE__.Single{v: v}, ts, xs),
-    do: reduceL(xs, ts) |> cons(v)
-  defp app3(xs, ts, %__MODULE__.Single{v: v}),
-    do: reduceR(xs, ts) |> snoc(v)
+  defp app3(%__MODULE__.Empty{}, ts, xs, zero, measure, reduce) do
+    reduceL(xs, ts, & cons(&2, &1, zero, measure, reduce))
+  end
+  defp app3(xs, ts, %__MODULE__.Empty{}, zero, measure, reduce) do
+    reduceR(xs, ts, & snoc(&2, &1, zero, measure, reduce))
+  end
+  defp app3(%__MODULE__.Single{v: v}, ts, xs, zero, measure, reduce) do
+    reduceL(xs, ts, & cons(&2, &1, zero, measure, reduce))
+    |> cons(v, zero, measure, reduce)
+  end
+  defp app3(xs, ts, %__MODULE__.Single{v: v}, zero, measure, reduce) do
+    reduceR(xs, ts, & snoc(&2, &1, zero, measure, reduce))
+    |> snoc(v, zero, measure, reduce)
+  end
   defp app3(%__MODULE__.Deep{pr: pr1, m: m1, sf: sf1},
       ts,
-      %__MODULE__.Deep{pr: pr2, m: m2, sf: sf2}) do
+      %__MODULE__.Deep{pr: pr2, m: m2, sf: sf2},
+      zero,
+      measure,
+      reduce) do
     lsf1 = Enum.to_list(sf1)
     lpr2 = Enum.to_list(pr2)
 
     deep(
       pr1,
-      app3(m1, Node.to_nodes(lsf1 ++ ts ++ lpr2), m2),
-      sf2
+      app3(m1, Node.to_nodes(lsf1 ++ ts ++ lpr2, zero, measure, reduce),
+        m2, zero, measure, reduce),
+      sf2,
+      zero,
+      measure,
+      reduce
     )
   end
 
-  def append(tree1, tree2) do
-    app3(tree1, [], tree2)
+  def append(tree1, tree2, zero \\ 0, measure \\ measure_fn, reduce \\ reduce_fn) do
+    app3(tree1, [], tree2, zero, measure, reduce)
   end
 
 end

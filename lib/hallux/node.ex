@@ -21,14 +21,18 @@ end
 defmodule Hallux.Node do
   alias Hallux.Digits.{One, Two, Three, Four}
   alias Hallux.{Node2, Node3}
-  import Hallux, only: [node2: 2, node3: 3]
+  import Hallux, only: [node2: 5, node3: 6]
 
   def to_digit(%Node2{l: l, r: r}), do: %Two{a: l, b: r}
   def to_digit(%Node3{l: l, m: m, r: r}), do: %Three{a: l, b: m, c: r}
 
-  def to_nodes([a,b]), do: [node2(a,b)]
-  def to_nodes([a,b,c]), do: [node3(a,b,c)]
-  def to_nodes([a,b,c,d]), do: [node2(a,b), node2(c,d)]
-  def to_nodes([a,b,c|rest]), do: [node3(a,b,c) | to_nodes(rest)]
+  def to_nodes([a,b], zero, measure, reduce),
+    do: [node2(a,b, zero, measure, reduce)]
+  def to_nodes([a,b,c], zero, measure, reduce),
+    do: [node3(a,b,c, zero, measure, reduce)]
+  def to_nodes([a,b,c,d], zero, measure, reduce),
+    do: [node2(a,b, zero, measure, reduce), node2(c,d, zero, measure, reduce)]
+  def to_nodes([a,b,c|rest], zero, measure, reduce),
+    do: [node3(a,b,c, zero, measure, reduce) | to_nodes(rest, zero, measure, reduce)]
 
 end
