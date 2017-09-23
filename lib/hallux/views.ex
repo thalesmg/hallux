@@ -29,8 +29,8 @@ defimpl Enumerable, for: Hallux.Views.NilL do
 end
 
 defimpl Enumerable, for: Hallux.Views.ConsL do
-  def count(consL), do: {:error, __MODULE__}
-  def member?(consL, elem), do: {:error, __MODULE__}
+  def count(_consL), do: {:error, __MODULE__}
+  def member?(_consL, _elem), do: {:error, __MODULE__}
 
   def reduce(_consL, {:halt, acc}, _fun) do
     {:halted, acc}
@@ -67,8 +67,8 @@ defimpl Enumerable, for: Hallux.Views.NilR do
 end
 
 defimpl Enumerable, for: Hallux.Views.ConsR do
-  def count(consR), do: {:error, __MODULE__}
-  def member?(consR, elem), do: {:error, __MODULE__}
+  def count(_consR), do: {:error, __MODULE__}
+  def member?(_consR, _elem), do: {:error, __MODULE__}
 
   def reduce(_consR, {:halt, acc}, _fun) do
     {:halted, acc}

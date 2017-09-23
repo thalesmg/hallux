@@ -13,7 +13,6 @@ defmodule Hallux.SplitTest do
     two: 2,
     three: 3,
     four: 4,
-    node2: 2,
     node3: 3,
     node3: 6
   ]

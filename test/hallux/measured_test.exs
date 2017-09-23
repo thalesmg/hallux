@@ -8,10 +8,7 @@ defmodule Hallux.MeasuredTest do
 
   import Hallux, only: [
     empty: 0,
-    single: 1,
     deep: 3,
-    one: 1,
-    two: 2,
     three: 3,
     four: 4,
     node2: 2,

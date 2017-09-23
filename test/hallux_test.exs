@@ -2,7 +2,7 @@ defmodule HalluxTest do
   use ExUnit.Case
 
   alias Hallux
-  alias Hallux.{Digits, Node2, Node3, Views}
+  alias Hallux.{Digits, Views}
 
   import Hallux, only: [
     empty: 0,

@@ -5,13 +5,11 @@ defmodule Hallux.Split do
   alias Hallux.{Empty, Single, Deep}
   alias Hallux.Digits
   alias Hallux.Node
-  alias Hallux.Digits.{One, Two, Three, Four}
+  alias Hallux.Digits.{One}
   alias Hallux.Measured
 
   import Hallux, only: [
     empty: 0,
-    deep: 3,
-    deep: 6,
     deepL: 6,
     deepR: 6
   ]
@@ -29,7 +27,7 @@ defmodule Hallux.Split do
     end
   end
 
-  def split_tree(_predicate, _acc, %Single{v: v}, zero, measure_fn, reduce_fn),
+  def split_tree(_predicate, _acc, %Single{v: v}, _zero, _measure_fn, _reduce_fn),
     do: %__MODULE__{l: empty(), x: v, r: empty()}
   def split_tree(predicate, acc, %Deep{} = tree, zero, measure_fn, reduce_fn) do
     %Deep{pr: pr, m: m, sf: sf} = tree

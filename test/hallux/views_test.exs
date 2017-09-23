@@ -2,7 +2,6 @@ defmodule Hallux.ViewsTest do
   use ExUnit.Case
 
   alias Hallux
-  alias Hallux.Views
   import Hallux.Views, only: [
     nilL: 0,
     nilR: 0

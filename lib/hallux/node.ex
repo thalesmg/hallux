@@ -19,7 +19,7 @@ defmodule Hallux.Node3 do
 end
 
 defmodule Hallux.Node do
-  alias Hallux.Digits.{One, Two, Three, Four}
+  alias Hallux.Digits.{Two, Three}
   alias Hallux.{Node2, Node3}
   import Hallux, only: [node2: 5, node3: 6]
 

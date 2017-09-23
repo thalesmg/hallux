@@ -10,9 +10,7 @@ defmodule Hallux do
     defstruct []
 
     defimpl Hallux.Measured do
-      alias Hallux.Empty
-
-      def size(empty, z, _measure, _reduce),
+      def size(_empty, z, _measure, _reduce),
         do: z
     end
   end
@@ -252,7 +250,7 @@ defmodule Hallux do
     )
   end
 
-  def append(tree1, tree2, zero \\ 0, measure \\ measure_fn, reduce \\ reduce_fn) do
+  def append(tree1, tree2, zero \\ 0, measure \\ measure_fn(), reduce \\ reduce_fn()) do
     app3(tree1, [], tree2, zero, measure, reduce)
   end
 
