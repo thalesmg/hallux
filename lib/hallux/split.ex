@@ -43,7 +43,6 @@ defmodule Hallux.Split do
       predicate.(vpr) ->
         %__MODULE__{l: l, x: x, r: r} = split_digit(
             predicate, acc, pr, zero, measure_fn, reduce_fn)
-
         r_ = deepL(r, m, sf, zero, measure_fn, reduce_fn)
         %__MODULE__{l: Hallux.to_tree(l), x: x, r: r_}
 
@@ -55,16 +54,13 @@ defmodule Hallux.Split do
           |> reduce_fn.(vpr)
         %__MODULE__{l: l, x: x, r: r} = split_digit(
             predicate, ml_acc, Node.to_digit(xs), zero, measure_fn, reduce_fn)
-
         l_ = deepR(pr, ml, l, zero, measure_fn, reduce_fn)
         r_ = deepL(r, mr, sf, zero, measure_fn, reduce_fn)
         %__MODULE__{l: l_, x: x, r: r_}
 
-
       :otherwise ->
         %__MODULE__{l: l, x: x, r: r} = split_digit(
             predicate, vm, sf, zero, measure_fn, reduce_fn)
-
         l_ = deepR(pr, m, l, zero, measure_fn, reduce_fn)
         %__MODULE__{l: l_, x: x, r: Hallux.to_tree(r)}
     end

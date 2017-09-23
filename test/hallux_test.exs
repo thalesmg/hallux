@@ -40,6 +40,13 @@ defmodule HalluxTest do
     end
   end
 
+  describe "to_list/1" do
+    test "identity" do
+      list = Enum.to_list(1..100)
+      assert list == Hallux.to_list(Hallux.to_tree(list))
+    end
+  end
+
   describe "viewL/1" do
     test "Empty tree" do
       assert Views.nilL() == Hallux.viewL(empty())
@@ -65,6 +72,20 @@ defmodule HalluxTest do
         hd: 3,
         tl: %Hallux.Deep{pr: %Digits.Two{a: 4, b: 5}}
       } = Hallux.viewL(tail2)
+    end
+  end
+
+  describe "empty?" do
+    test "empty" do
+      assert Hallux.empty?(empty())
+    end
+
+    test "single" do
+      refute Hallux.empty?(single(1))
+    end
+
+    test "deep" do
+      refute Hallux.empty?(Hallux.to_tree(1..10))
     end
   end
 

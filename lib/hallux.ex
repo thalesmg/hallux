@@ -146,6 +146,14 @@ defmodule Hallux do
     reduceL(empty(), xs, zero, measure, reduce)
   end
 
+  def to_list(tree) do
+    case viewL(tree) do
+      %Views.NilL{} -> []
+      %Views.ConsL{hd: hd, tl: tl} ->
+        [hd | to_list(tl)]
+    end
+  end
+
   def viewL(%__MODULE__.Empty{}), do: Views.nilL()
   def viewL(%__MODULE__.Single{v: v}), do: Views.consL(v, empty())
   def viewL(%__MODULE__.Deep{pr: pr, m: m, sf: sf}) do
@@ -164,8 +172,8 @@ defmodule Hallux do
 
   def empty?(tree) do
     case viewL tree do
-      %Views.NilL{} -> True
-      %Views.ConsL{} -> False
+      %Views.NilL{} -> true
+      %Views.ConsL{} -> false
     end
   end
 
