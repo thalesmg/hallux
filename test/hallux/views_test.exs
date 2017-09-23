@@ -25,7 +25,14 @@ defmodule Hallux.ViewsTest do
     test "member? : cons" do
       tree = Hallux.to_tree(1..10)
       target = Enum.random(1..10)
-      assert true == Enum.member?(Hallux.viewL(tree), target)
+      assert true == Enum.member?(Hallux.viewL(tree), target),
+        "#{inspect target} should be a member"
+    end
+
+    test "member? : last cons" do
+      tree = Hallux.to_tree(1..10)
+      assert true == Enum.member?(Hallux.viewL(tree), 10),
+        "10 should be a member"
     end
 
     test "reduce : nil" do
@@ -58,7 +65,14 @@ defmodule Hallux.ViewsTest do
     test "member? : cons" do
       tree = Hallux.to_tree(1..10)
       target = Enum.random(1..10)
-      assert true == Enum.member?(Hallux.viewR(tree), target)
+      assert true == Enum.member?(Hallux.viewR(tree), target),
+        "#{inspect target} should be a member"
+    end
+
+    test "member? : last cons" do
+      tree = Hallux.to_tree(1..10)
+      assert true == Enum.member?(Hallux.viewR(tree), 1),
+        "1 should be a member"
     end
 
     test "reduce : nil" do

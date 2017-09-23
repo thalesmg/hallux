@@ -14,8 +14,8 @@ end
 
 
 defimpl Enumerable, for: Hallux.Views.NilL do
-  def count(_nilL), do: {:ok, 0}
-  def member?(_nilL, _elem), do: {:ok, false}
+  def count(_nilL), do: {:error, __MODULE__}
+  def member?(_nilL, _elem), do: {:error, __MODULE__}
 
   def reduce(_nilL, {:halt, acc}, _fun) do
     {:halted, acc}
@@ -41,8 +41,10 @@ defimpl Enumerable, for: Hallux.Views.ConsL do
   def reduce(consL, {:cont, acc}, fun) do
     case Hallux.viewL(consL.tl) do
       %Hallux.Views.NilL{} ->
-        {:cont, result} = fun.(consL.hd, acc)
-        {:done, result}
+        case fun.(consL.hd, acc) do
+          {:cont, result} -> {:done, result}
+          other -> other
+        end
       %Hallux.Views.ConsL{} = tl ->
         reduce(tl, fun.(consL.hd, acc), fun)
     end
@@ -50,8 +52,8 @@ defimpl Enumerable, for: Hallux.Views.ConsL do
 end
 
 defimpl Enumerable, for: Hallux.Views.NilR do
-  def count(_nilR), do: {:ok, 0}
-  def member?(_nilR, _elem), do: {:ok, false}
+  def count(_nilR), do: {:error, __MODULE__}
+  def member?(_nilR, _elem), do: {:error, __MODULE__}
 
   def reduce(_nilR, {:halt, acc}, _fun) do
     {:halted, acc}
@@ -77,8 +79,10 @@ defimpl Enumerable, for: Hallux.Views.ConsR do
   def reduce(consR, {:cont, acc}, fun) do
     case Hallux.viewR(consR.tl) do
       %Hallux.Views.NilR{} ->
-        {:cont, result} = fun.(consR.hd, acc)
-        {:done, result}
+        case fun.(consR.hd, acc) do
+          {:cont, result} -> {:done, result}
+          other -> other
+        end
       %Hallux.Views.ConsR{} = tl ->
         reduce(tl, fun.(consR.hd, acc), fun)
     end
