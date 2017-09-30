@@ -2,13 +2,14 @@ defmodule Hallux.Split do
   defstruct [:l, :x, :r]
 
   alias Hallux
-  alias Hallux.{Empty, Single, Deep}
+  alias Hallux.Internal
+  alias Hallux.Internal.{Empty, Single, Deep}
   alias Hallux.Digits
   alias Hallux.Node
   alias Hallux.Digits.{One}
   alias Hallux.Measured
 
-  import Hallux, only: [
+  import Hallux.Internal, only: [
     empty: 0,
     deepL: 6,
     deepR: 6
@@ -21,7 +22,7 @@ defmodule Hallux.Split do
 
     mtree = Measured.size(tree, zero, measure_fn, reduce_fn)
     if predicate.(mtree) do
-      {l, Hallux.cons(r, x)}
+      {l, Internal.cons(r, x)}
     else
       {tree, empty()}
     end
@@ -42,7 +43,7 @@ defmodule Hallux.Split do
         %__MODULE__{l: l, x: x, r: r} = split_digit(
             predicate, acc, pr, zero, measure_fn, reduce_fn)
         r_ = deepL(r, m, sf, zero, measure_fn, reduce_fn)
-        %__MODULE__{l: Hallux.to_tree(l), x: x, r: r_}
+        %__MODULE__{l: Internal.to_tree(l), x: x, r: r_}
 
       predicate.(vm) ->
         %__MODULE__{l: ml, x: xs, r: mr} = split_tree(
@@ -60,7 +61,7 @@ defmodule Hallux.Split do
         %__MODULE__{l: l, x: x, r: r} = split_digit(
             predicate, vm, sf, zero, measure_fn, reduce_fn)
         l_ = deepR(pr, m, l, zero, measure_fn, reduce_fn)
-        %__MODULE__{l: l_, x: x, r: Hallux.to_tree(r)}
+        %__MODULE__{l: l_, x: x, r: Internal.to_tree(r)}
     end
   end
 

@@ -21,7 +21,7 @@ end
 defmodule Hallux.Node do
   alias Hallux.Digits.{Two, Three}
   alias Hallux.{Node2, Node3}
-  import Hallux, only: [node2: 5, node3: 6]
+  import Hallux.Internal, only: [node2: 5, node3: 6]
 
   def to_digit(%Node2{l: l, r: r}), do: %Two{a: l, b: r}
   def to_digit(%Node3{l: l, m: m, r: r}), do: %Three{a: l, b: m, c: r}

@@ -4,9 +4,9 @@ defmodule Hallux.MeasuredTest do
   alias Hallux.Measured
   alias Hallux.Digits.{One, Two, Three, Four}
   alias Hallux.{Node2, Node3}
-  alias Hallux.{Empty, Single, Deep}
+  alias Hallux.Internal.{Empty, Single, Deep}
 
-  import Hallux, only: [
+  import Hallux.Internal, only: [
     empty: 0,
     deep: 3,
     three: 3,

@@ -3,30 +3,31 @@ defmodule Hallux.Seq do
   defstruct [:__tree__]
 
   alias Hallux
+  alias Hallux.Internal
   alias Hallux.Split
   alias Hallux.Seq.Views
 
   def new() do
-    %__MODULE__{__tree__: Hallux.empty()}
+    %__MODULE__{__tree__: Internal.empty()}
   end
-  def new(%Hallux.Empty{} = tree) do
+  def new(%Internal.Empty{} = tree) do
     %__MODULE__{__tree__: tree}
   end
-  def new(%Hallux.Single{} = tree) do
+  def new(%Internal.Single{} = tree) do
     %__MODULE__{__tree__: tree}
   end
-  def new(%Hallux.Deep{} = tree) do
+  def new(%Internal.Deep{} = tree) do
     %__MODULE__{__tree__: tree}
   end
   def new(enum, transform_fn \\ & &1) do
     tree = Enum.map(enum, transform_fn)
-    |> Hallux.to_tree(zero(), &measure_fn/1, &reduce_fn/2)
+    |> Internal.to_tree(zero(), &measure_fn/1, &reduce_fn/2)
 
     %__MODULE__{__tree__: tree}
   end
 
   def to_list(%__MODULE__{__tree__: tree}) do
-    Hallux.to_list(tree)
+    Internal.to_list(tree)
   end
 
   def at(%__MODULE__{__tree__: tree} = seq, index)
@@ -86,27 +87,27 @@ defmodule Hallux.Seq do
   end
 
   def empty?(%__MODULE__{__tree__: tree}) do
-    Hallux.empty?(tree)
+    Internal.empty?(tree)
   end
 
   def cons(%__MODULE__{__tree__: tree}, elem) do
-    Hallux.cons(tree, elem, zero(), &measure_fn/1, &reduce_fn/2)
+    Internal.cons(tree, elem, zero(), &measure_fn/1, &reduce_fn/2)
     |> new()
   end
 
   def snoc(%__MODULE__{__tree__: tree}, elem) do
-    Hallux.snoc(tree, elem, zero(), &measure_fn/1, &reduce_fn/2)
+    Internal.snoc(tree, elem, zero(), &measure_fn/1, &reduce_fn/2)
     |> new()
   end
 
   def append(%__MODULE__{__tree__: tree1},
              %__MODULE__{__tree__: tree2}) do
-    Hallux.append(tree1, tree2, zero(), &measure_fn/1, &reduce_fn/2)
+    Internal.append(tree1, tree2, zero(), &measure_fn/1, &reduce_fn/2)
     |> new()
   end
 
   def viewL(%__MODULE__{__tree__: tree}) do
-    case Hallux.viewL(tree) do
+    case Internal.viewL(tree) do
       %Hallux.Views.NilL{} ->
         %Views.NilL{}
       %Hallux.Views.ConsL{hd: hd, tl: tl} ->
@@ -115,7 +116,7 @@ defmodule Hallux.Seq do
   end
 
   def viewR(%__MODULE__{__tree__: tree}) do
-    case Hallux.viewR(tree) do
+    case Internal.viewR(tree) do
       %Hallux.Views.NilR{} ->
         %Views.NilR{}
       %Hallux.Views.ConsR{hd: hd, tl: tl} ->
@@ -133,7 +134,7 @@ defmodule Hallux.Seq do
     def inspect(seq, opts) do
       concat([
         "#HalluxSeq<",
-        to_doc(Hallux.to_list(seq.__tree__), opts),
+        to_doc(Internal.to_list(seq.__tree__), opts),
         ">"
       ])
     end

@@ -1,10 +1,11 @@
 defmodule Hallux.SplitTest do
   use ExUnit.Case
 
+  alias Hallux.Internal
   alias Hallux.Measured
   alias Hallux.Split
 
-  import Hallux, only: [
+  import Hallux.Internal, only: [
     empty: 0,
     single: 1,
     deep: 3,
@@ -32,18 +33,18 @@ defmodule Hallux.SplitTest do
     end
 
     test "Split at point", %{p: p, mfn: mfn, rfn: rfn, z: z} do
-      tree = Hallux.to_tree(1..100)
+      tree = Internal.to_tree(1..100)
 
       {left, right} = Split.split(tree, p, z, mfn, rfn)
 
       assert 50 == Measured.size(left, z, mfn, rfn)
       assert 50 == Measured.size(right, z, mfn, rfn)
 
-      assert 1 == Hallux.headL(left)
-      assert 50 == Hallux.headR(left)
+      assert 1 == Internal.headL(left)
+      assert 50 == Internal.headR(left)
 
-      assert 51 == Hallux.headL(right)
-      assert 100 == Hallux.headR(right)
+      assert 51 == Internal.headL(right)
+      assert 100 == Internal.headR(right)
     end
   end
 
@@ -72,7 +73,7 @@ defmodule Hallux.SplitTest do
     end
 
     test "deep", %{p: p, mfn: mfn, rfn: rfn, z: z} do
-      tree = Hallux.to_tree(6..16, z, mfn, rfn)
+      tree = Internal.to_tree(6..16, z, mfn, rfn)
       assert split(
         deep(
           four(6,7,8,9),
@@ -104,7 +105,7 @@ defmodule Hallux.SplitTest do
     end
 
     test "random access", %{p: p, mfn: mfn, rfn: rfn, z: z} do
-      tree = Hallux.to_tree(1..22, z, mfn, rfn)
+      tree = Internal.to_tree(1..22, z, mfn, rfn)
 
       assert split(
         deep(
@@ -126,7 +127,7 @@ defmodule Hallux.SplitTest do
     end
 
     test "more random access", %{mfn: mfn, rfn: rfn, z: z} do
-      tree = Hallux.to_tree(1..100, z, mfn, rfn)
+      tree = Internal.to_tree(1..100, z, mfn, rfn)
 
       for x <- 1..100 do
         p = & &1 >= x

@@ -1,10 +1,11 @@
-defmodule HalluxTest do
+defmodule Hallux.InternalTest do
   use ExUnit.Case
 
   alias Hallux
+  alias Hallux.Internal
   alias Hallux.{Digits, Views}
 
-  import Hallux, only: [
+  import Hallux.Internal, only: [
     empty: 0,
     single: 1,
     deep: 3,
@@ -18,11 +19,11 @@ defmodule HalluxTest do
 
   describe "to_tree/1" do
     test "Empty" do
-      assert empty() == Hallux.to_tree([])
+      assert empty() == Internal.to_tree([])
     end
 
     test "Single" do
-      assert single(:ok) == Hallux.to_tree([:ok])
+      assert single(:ok) == Internal.to_tree([:ok])
     end
 
     test "Deep" do
@@ -36,109 +37,109 @@ defmodule HalluxTest do
           ),
           one(24)
         )
-      assert expected == Hallux.to_tree(1..24)
+      assert expected == Internal.to_tree(1..24)
     end
   end
 
   describe "to_list/1" do
     test "identity" do
       list = Enum.to_list(1..100)
-      assert list == Hallux.to_list(Hallux.to_tree(list))
+      assert list == Internal.to_list(Internal.to_tree(list))
     end
   end
 
   describe "viewL/1" do
     test "Empty tree" do
-      assert Views.nilL() == Hallux.viewL(empty())
+      assert Views.nilL() == Internal.viewL(empty())
     end
 
     test "Single tree" do
-      assert Views.consL(1, empty()) == Hallux.viewL(single(1))
+      assert Views.consL(1, empty()) == Internal.viewL(single(1))
     end
 
     test "Deep tree" do
-      tree = Hallux.to_tree(1..24)
+      tree = Internal.to_tree(1..24)
       assert %Views.ConsL{
         hd: 1,
-        tl: %Hallux.Deep{pr: %Digits.One{a: 2}} = tail
-      } = Hallux.viewL(tree)
+        tl: %Internal.Deep{pr: %Digits.One{a: 2}} = tail
+      } = Internal.viewL(tree)
 
       assert %Views.ConsL{
         hd: 2,
-        tl: %Hallux.Deep{pr: %Digits.Three{a: 3, b: 4, c: 5}} = tail2
-      } = Hallux.viewL(tail)
+        tl: %Internal.Deep{pr: %Digits.Three{a: 3, b: 4, c: 5}} = tail2
+      } = Internal.viewL(tail)
 
       assert %Views.ConsL{
         hd: 3,
-        tl: %Hallux.Deep{pr: %Digits.Two{a: 4, b: 5}}
-      } = Hallux.viewL(tail2)
+        tl: %Internal.Deep{pr: %Digits.Two{a: 4, b: 5}}
+      } = Internal.viewL(tail2)
     end
   end
 
   describe "empty?" do
     test "empty" do
-      assert Hallux.empty?(empty())
+      assert Internal.empty?(empty())
     end
 
     test "single" do
-      refute Hallux.empty?(single(1))
+      refute Internal.empty?(single(1))
     end
 
     test "deep" do
-      refute Hallux.empty?(Hallux.to_tree(1..10))
+      refute Internal.empty?(Internal.to_tree(1..10))
     end
   end
 
   describe "viewR/1" do
     test "Empty tree" do
-      assert Views.nilR() == Hallux.viewR(empty())
+      assert Views.nilR() == Internal.viewR(empty())
     end
 
     test "Single tree" do
-      assert Views.consR(1, empty()) == Hallux.viewR(single(1))
+      assert Views.consR(1, empty()) == Internal.viewR(single(1))
     end
 
     test "Deep tree" do
-      tree = Hallux.to_tree(1..24)
+      tree = Internal.to_tree(1..24)
       assert %Views.ConsR{
         hd: 24,
-        tl: %Hallux.Deep{sf: %Digits.Three{a: 21, b: 22, c: 23}} = tail
-      } = Hallux.viewR(tree)
+        tl: %Internal.Deep{sf: %Digits.Three{a: 21, b: 22, c: 23}} = tail
+      } = Internal.viewR(tree)
 
       assert %Views.ConsR{
         hd: 23,
-        tl: %Hallux.Deep{sf: %Digits.Two{a: 21, b: 22}} = tail2
-      } = Hallux.viewR(tail)
+        tl: %Internal.Deep{sf: %Digits.Two{a: 21, b: 22}} = tail2
+      } = Internal.viewR(tail)
 
       assert %Views.ConsR{
         hd: 22,
-        tl: %Hallux.Deep{sf: %Digits.One{a: 21}}
-      } = Hallux.viewR(tail2)
+        tl: %Internal.Deep{sf: %Digits.One{a: 21}}
+      } = Internal.viewR(tail2)
     end
   end
 
   describe "cons/1" do
     test "Empty" do
-      assert single(1) == Hallux.cons(empty(), 1)
+      assert single(1) == Internal.cons(empty(), 1)
     end
 
     test "Single" do
-      assert deep(one(2), empty(), one(1)) == Hallux.cons(single(1), 2)
+      assert deep(one(2), empty(), one(1)) == Internal.cons(single(1), 2)
     end
 
     test "Deep : one" do
       tree = deep(one(1), empty(), one(2))
-      assert deep(two(3,1), empty(), one(2)) == Hallux.cons(tree, 3)
+      assert deep(two(3,1), empty(), one(2)) == Internal.cons(tree, 3)
     end
 
     test "Deep : two" do
       tree = deep(two(1,2), empty(), one(3))
-      assert deep(three(4,1,2), empty(), one(3)) == Hallux.cons(tree, 4)
+      assert deep(three(4,1,2), empty(), one(3)) == Internal.cons(tree, 4)
     end
 
     test "Deep : three" do
       tree = deep(three(1,2,3), empty(), one(4))
-      assert deep(four(5,1,2,3), empty(), one(4)) == Hallux.cons(tree, 5)
+      assert deep(four(5,1,2,3), empty(), one(4)) == Internal.cons(tree, 5)
     end
 
     test "Deep : four" do
@@ -147,32 +148,32 @@ defmodule HalluxTest do
         two(6,1),
         single(node3(2,3,4)),
         one(5)
-      ) == Hallux.cons(tree, 6)
+      ) == Internal.cons(tree, 6)
     end
   end
 
   describe "snoc/1" do
     test "Empty" do
-      assert single(1) == Hallux.snoc(empty(), 1)
+      assert single(1) == Internal.snoc(empty(), 1)
     end
 
     test "Single" do
-      assert deep(one(1), empty(), one(2)) == Hallux.snoc(single(1), 2)
+      assert deep(one(1), empty(), one(2)) == Internal.snoc(single(1), 2)
     end
 
     test "Deep : one" do
       tree = deep(one(1), empty(), one(2))
-      assert deep(one(1), empty(), two(2,3)) == Hallux.snoc(tree, 3)
+      assert deep(one(1), empty(), two(2,3)) == Internal.snoc(tree, 3)
     end
 
     test "Deep : two" do
       tree = deep(one(1), empty(), two(2,3))
-      assert deep(one(1), empty(), three(2,3,4)) == Hallux.snoc(tree, 4)
+      assert deep(one(1), empty(), three(2,3,4)) == Internal.snoc(tree, 4)
     end
 
     test "Deep : three" do
       tree = deep(one(1), empty(), three(2,3,4))
-      assert deep(one(1), empty(), four(2,3,4,5)) == Hallux.snoc(tree, 5)
+      assert deep(one(1), empty(), four(2,3,4,5)) == Internal.snoc(tree, 5)
     end
 
     test "Deep : four" do
@@ -181,43 +182,43 @@ defmodule HalluxTest do
         one(1),
         single(node3(2,3,4)),
         two(5,6)
-      ) == Hallux.snoc(tree, 6)
+      ) == Internal.snoc(tree, 6)
     end
   end
 
   describe "append/2" do
     test "empty empty" do
-      assert empty() == Hallux.append(empty(), empty())
+      assert empty() == Internal.append(empty(), empty())
     end
 
     test "empty single" do
-      assert single(1) == Hallux.append(single(1), empty())
-      assert single(1) == Hallux.append(empty(), single(1))
+      assert single(1) == Internal.append(single(1), empty())
+      assert single(1) == Internal.append(empty(), single(1))
     end
 
     test "single single" do
-      assert deep(one(1), empty(), one(2)) == Hallux.append(single(1), single(2))
+      assert deep(one(1), empty(), one(2)) == Internal.append(single(1), single(2))
     end
 
     test "single deep" do
-      deep = Hallux.to_tree(1..10)
+      deep = Internal.to_tree(1..10)
 
       assert deep(
         three(1,2,3),
         deep(one(node3(4,5,6)), empty(), one(node3(7,8,9))),
         two(10, :ok)
-      ) == Hallux.append(deep, single(:ok))
+      ) == Internal.append(deep, single(:ok))
 
       assert deep(
         four(:ok,1,2,3),
         deep(one(node3(4,5,6)), empty(), one(node3(7,8,9))),
         one(10)
-      ) == Hallux.append(single(:ok), deep)
+      ) == Internal.append(single(:ok), deep)
     end
 
     test "deep deep" do
-      deep1 = Hallux.to_tree(1..10)
-      deep2 = Hallux.to_tree(11..20)
+      deep1 = Internal.to_tree(1..10)
+      deep2 = Internal.to_tree(11..20)
 
       assert deep(
         three(1,2,3),
@@ -231,7 +232,7 @@ defmodule HalluxTest do
           one(node3(17,18,19))
         ),
         one(20)
-      ) == Hallux.append(deep1, deep2)
+      ) == Internal.append(deep1, deep2)
 
       assert deep(
         three(11,12,13),
@@ -245,19 +246,19 @@ defmodule HalluxTest do
           one(node3(7,8,9))
         ),
         one(10)
-      ) == Hallux.append(deep2, deep1)
+      ) == Internal.append(deep2, deep1)
     end
 
     test "different measure" do
       zero = 0
       mfn = fn _ -> 10 end
       rfn = &+/2
-      tree1 = Hallux.to_tree(1..5, zero, mfn, rfn)
-      tree2 = Hallux.to_tree(6..10, zero, mfn, rfn)
-      appended = Hallux.append(tree1, tree2, zero, mfn, rfn)
+      tree1 = Internal.to_tree(1..5, zero, mfn, rfn)
+      tree2 = Internal.to_tree(6..10, zero, mfn, rfn)
+      appended = Internal.append(tree1, tree2, zero, mfn, rfn)
 
       assert 100 == Hallux.Measured.size(appended, zero, mfn, rfn)
-      assert Enum.to_list(1..10) == Hallux.to_list(appended)
+      assert Enum.to_list(1..10) == Internal.to_list(appended)
     end
   end
 

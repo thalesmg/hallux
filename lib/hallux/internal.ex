@@ -1,10 +1,10 @@
-defmodule Hallux do
-  alias __MODULE__.Views
-  alias __MODULE__.Digits
-  alias __MODULE__.Digits.{One, Two, Three, Four}
-  alias __MODULE__.{Node, Node2, Node3}
+defmodule Hallux.Internal do
+  alias Hallux.Views
+  alias Hallux.Digits
+  alias Hallux.Digits.{One, Two, Three, Four}
+  alias Hallux.{Node, Node2, Node3}
 
-  alias __MODULE__.Measured
+  alias Hallux.Measured
 
   defmodule Empty do
     defstruct []
@@ -19,7 +19,7 @@ defmodule Hallux do
     defstruct [:v]
 
     defimpl Hallux.Measured do
-      alias Hallux.Single
+      alias Hallux.Internal.Single
       alias Hallux.Measured
 
       def size(%Single{v: v}, z, measure, reduce),
@@ -31,7 +31,7 @@ defmodule Hallux do
     defstruct [:pr, :m, :sf, :__size__]
 
     defimpl Hallux.Measured do
-      alias Hallux.Deep
+      alias Hallux.Internal.Deep
 
       def size(%Deep{__size__: s}, _, _, _), do: s
     end

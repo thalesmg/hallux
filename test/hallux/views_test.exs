@@ -2,6 +2,7 @@ defmodule Hallux.ViewsTest do
   use ExUnit.Case
 
   alias Hallux
+  alias Hallux.Internal
   import Hallux.Views, only: [
     nilL: 0,
     nilR: 0
@@ -13,8 +14,8 @@ defmodule Hallux.ViewsTest do
     end
 
     test "count : cons" do
-      tree = Hallux.to_tree(1..10)
-      assert 10 == Enum.count(Hallux.viewL(tree))
+      tree = Internal.to_tree(1..10)
+      assert 10 == Enum.count(Internal.viewL(tree))
     end
 
     test "member? : nil" do
@@ -22,15 +23,15 @@ defmodule Hallux.ViewsTest do
     end
 
     test "member? : cons" do
-      tree = Hallux.to_tree(1..10)
+      tree = Internal.to_tree(1..10)
       target = Enum.random(1..10)
-      assert true == Enum.member?(Hallux.viewL(tree), target),
+      assert true == Enum.member?(Internal.viewL(tree), target),
         "#{inspect target} should be a member"
     end
 
     test "member? : last cons" do
-      tree = Hallux.to_tree(1..10)
-      assert true == Enum.member?(Hallux.viewL(tree), 10),
+      tree = Internal.to_tree(1..10)
+      assert true == Enum.member?(Internal.viewL(tree), 10),
         "10 should be a member"
     end
 
@@ -41,9 +42,9 @@ defmodule Hallux.ViewsTest do
     end
 
     test "reduce : cons" do
-      tree = Hallux.to_tree(1..10)
+      tree = Internal.to_tree(1..10)
       list = Enum.to_list(1..10)
-      assert list == Enum.to_list(Hallux.viewL(tree))
+      assert list == Enum.to_list(Internal.viewL(tree))
     end
   end
 
@@ -53,8 +54,8 @@ defmodule Hallux.ViewsTest do
     end
 
     test "count : cons" do
-      tree = Hallux.to_tree(1..10)
-      assert 10 == Enum.count(Hallux.viewR(tree))
+      tree = Internal.to_tree(1..10)
+      assert 10 == Enum.count(Internal.viewR(tree))
     end
 
     test "member? : nil" do
@@ -62,15 +63,15 @@ defmodule Hallux.ViewsTest do
     end
 
     test "member? : cons" do
-      tree = Hallux.to_tree(1..10)
+      tree = Internal.to_tree(1..10)
       target = Enum.random(1..10)
-      assert true == Enum.member?(Hallux.viewR(tree), target),
+      assert true == Enum.member?(Internal.viewR(tree), target),
         "#{inspect target} should be a member"
     end
 
     test "member? : last cons" do
-      tree = Hallux.to_tree(1..10)
-      assert true == Enum.member?(Hallux.viewR(tree), 1),
+      tree = Internal.to_tree(1..10)
+      assert true == Enum.member?(Internal.viewR(tree), 1),
         "1 should be a member"
     end
 
@@ -81,9 +82,9 @@ defmodule Hallux.ViewsTest do
     end
 
     test "reduce : cons" do
-      tree = Hallux.to_tree(1..10)
+      tree = Internal.to_tree(1..10)
       list = Enum.to_list(10..1)
-      assert list == Enum.to_list(Hallux.viewR(tree))
+      assert list == Enum.to_list(Internal.viewR(tree))
     end
   end
 end

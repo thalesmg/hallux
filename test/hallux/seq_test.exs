@@ -2,9 +2,10 @@ defmodule Hallux.SeqTest do
   use ExUnit.Case
 
   alias Hallux
+  alias Hallux.Internal
   alias Hallux.Seq
 
-  import Hallux, only: [
+  import Hallux.Internal, only: [
     empty: 0,
     single: 1,
   ]
@@ -17,7 +18,7 @@ defmodule Hallux.SeqTest do
     test "from trees" do
       empty = empty()
       single = single(1)
-      deep = Hallux.to_tree(1..50)
+      deep = Internal.to_tree(1..50)
 
       assert %Seq{__tree__: empty} == Seq.new(empty)
       assert %Seq{__tree__: single} == Seq.new(single)
@@ -26,7 +27,7 @@ defmodule Hallux.SeqTest do
 
     test "from enum" do
       set = MapSet.new(1..50)
-      tree = Hallux.to_tree(set)
+      tree = Internal.to_tree(set)
       assert %Seq{__tree__: tree} == Seq.new(set)
     end
 
@@ -34,7 +35,7 @@ defmodule Hallux.SeqTest do
       map = Enum.with_index(-50..-1)
       |> Map.new()
       list = Map.values(map)
-      tree = Hallux.to_tree(list)
+      tree = Internal.to_tree(list)
       assert %Seq{__tree__: tree} == Seq.new(map, & elem(&1, 1))
     end
   end
