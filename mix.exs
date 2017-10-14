@@ -5,7 +5,7 @@ defmodule Hallux.Mixfile do
     [
       app: :hallux,
       name: "Hallux",
-      version: "0.1.0",
+      version: "0.1.1",
       description: "Provides an implementation for Finger Trees in Elixir",
       package: package(),
       source_url: "https://github.com/thalesmg/hallux",
