@@ -3,10 +3,12 @@ defmodule Hallux.ViewsTest do
 
   alias Hallux
   alias Hallux.Internal
-  import Hallux.Views, only: [
-    nilL: 0,
-    nilR: 0
-  ]
+
+  import Hallux.Views,
+    only: [
+      nilL: 0,
+      nilR: 0
+    ]
 
   describe "Enumerable Left" do
     test "count : nil" do
@@ -25,19 +27,19 @@ defmodule Hallux.ViewsTest do
     test "member? : cons" do
       tree = Internal.to_tree(1..10)
       target = Enum.random(1..10)
+
       assert true == Enum.member?(Internal.viewL(tree), target),
-        "#{inspect target} should be a member"
+             "#{inspect(target)} should be a member"
     end
 
     test "member? : last cons" do
       tree = Internal.to_tree(1..10)
-      assert true == Enum.member?(Internal.viewL(tree), 10),
-        "10 should be a member"
+      assert true == Enum.member?(Internal.viewL(tree), 10), "10 should be a member"
     end
 
     test "reduce : nil" do
       assert_raise Enum.EmptyError, fn ->
-        Enum.reduce(nilL(), & &1 + 1)
+        Enum.reduce(nilL(), &(&1 + 1))
       end
     end
 
@@ -65,19 +67,19 @@ defmodule Hallux.ViewsTest do
     test "member? : cons" do
       tree = Internal.to_tree(1..10)
       target = Enum.random(1..10)
+
       assert true == Enum.member?(Internal.viewR(tree), target),
-        "#{inspect target} should be a member"
+             "#{inspect(target)} should be a member"
     end
 
     test "member? : last cons" do
       tree = Internal.to_tree(1..10)
-      assert true == Enum.member?(Internal.viewR(tree), 1),
-        "1 should be a member"
+      assert true == Enum.member?(Internal.viewR(tree), 1), "1 should be a member"
     end
 
     test "reduce : nil" do
       assert_raise Enum.EmptyError, fn ->
-        Enum.reduce(nilR(), & &1 + 1)
+        Enum.reduce(nilR(), &(&1 + 1))
       end
     end
 

@@ -6,16 +6,17 @@ defmodule Hallux.MeasuredTest do
   alias Hallux.{Node2, Node3}
   alias Hallux.Internal.{Empty, Single, Deep}
 
-  import Hallux.Internal, only: [
-    empty: 0,
-    deep: 3,
-    three: 3,
-    four: 4,
-    node2: 2,
-    node2: 5,
-    node3: 3,
-    node3: 6
-  ]
+  import Hallux.Internal,
+    only: [
+      empty: 0,
+      deep: 3,
+      three: 3,
+      four: 4,
+      node2: 2,
+      node2: 5,
+      node3: 3,
+      node3: 6
+    ]
 
   describe "Nodes" do
     setup do
@@ -94,19 +95,9 @@ defmodule Hallux.MeasuredTest do
       n1 = node2(10, 20, z, mfn, rfn)
       n2 = node3(50, 50, 60, z, mfn, rfn)
       # Digits are calculated on the fly.
-      pr = three(1,2,3)
-      sf = four(-1,-2,-3,-4)
-      assert 12 == Measured.size(
-        deep(
-          pr,
-          deep(n1, empty(), n2),
-          sf
-        ),
-        z,
-        mfn,
-        rfn
-      )
+      pr = three(1, 2, 3)
+      sf = four(-1, -2, -3, -4)
+      assert 12 == Measured.size(deep(pr, deep(n1, empty(), n2), sf), z, mfn, rfn)
     end
   end
-
 end
