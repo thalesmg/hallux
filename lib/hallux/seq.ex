@@ -1,5 +1,4 @@
 defmodule Hallux.Seq do
-
   defstruct [:__tree__]
 
   alias Hallux
@@ -10,18 +9,23 @@ defmodule Hallux.Seq do
   def new() do
     %__MODULE__{__tree__: Internal.empty()}
   end
+
   def new(%Internal.Empty{} = tree) do
     %__MODULE__{__tree__: tree}
   end
+
   def new(%Internal.Single{} = tree) do
     %__MODULE__{__tree__: tree}
   end
+
   def new(%Internal.Deep{} = tree) do
     %__MODULE__{__tree__: tree}
   end
+
   def new(enum, transform_fn \\ & &1) do
-    tree = Enum.map(enum, transform_fn)
-    |> Internal.to_tree(zero(), &measure_fn/1, &reduce_fn/2)
+    tree =
+      Enum.map(enum, transform_fn)
+      |> Internal.to_tree(zero(), &measure_fn/1, &reduce_fn/2)
 
     %__MODULE__{__tree__: tree}
   end
@@ -31,24 +35,23 @@ defmodule Hallux.Seq do
   end
 
   def at(%__MODULE__{__tree__: tree} = seq, index)
-    when is_integer(index)
-    and index >= 0
-  do
+      when is_integer(index) and index >= 0 do
     if index >= size(seq) do
       nil
     else
-      predicate = & &1 >= index + 1
-      %Split{x: target} = Split.split_tree(predicate,
-        zero(), tree, zero(), &measure_fn/1, &reduce_fn/2
-      )
+      predicate = &(&1 >= index + 1)
+
+      %Split{x: target} =
+        Split.split_tree(predicate, zero(), tree, zero(), &measure_fn/1, &reduce_fn/2)
+
       target
     end
   end
+
   def at(%__MODULE__{} = seq, index)
-    when is_integer(index)
-    and index < 0
-  do
+      when is_integer(index) and index < 0 do
     seq_size = size(seq)
+
     if abs(index) > seq_size do
       nil
     else
@@ -58,22 +61,20 @@ defmodule Hallux.Seq do
   end
 
   def split_at(%__MODULE__{__tree__: tree} = seq, index)
-    when is_integer(index)
-    and index >= 0
-  do
+      when is_integer(index) and index >= 0 do
     if index >= size(seq) do
       :error
     else
-      predicate = & &1 >= index + 1
+      predicate = &(&1 >= index + 1)
       {left, right} = Split.split(tree, predicate, zero(), &measure_fn/1, &reduce_fn/2)
       {:ok, {new(left), new(right)}}
     end
   end
+
   def split_at(%__MODULE__{} = seq, index)
-    when is_integer(index)
-    and index < 0
-  do
+      when is_integer(index) and index < 0 do
     seq_size = size(seq)
+
     if abs(index) > seq_size do
       :error
     else
@@ -100,8 +101,7 @@ defmodule Hallux.Seq do
     |> new()
   end
 
-  def append(%__MODULE__{__tree__: tree1},
-             %__MODULE__{__tree__: tree2}) do
+  def append(%__MODULE__{__tree__: tree1}, %__MODULE__{__tree__: tree2}) do
     Internal.append(tree1, tree2, zero(), &measure_fn/1, &reduce_fn/2)
     |> new()
   end
@@ -110,6 +110,7 @@ defmodule Hallux.Seq do
     case Internal.viewL(tree) do
       %Hallux.Views.NilL{} ->
         %Views.NilL{}
+
       %Hallux.Views.ConsL{hd: hd, tl: tl} ->
         %Views.ConsL{hd: hd, tl: new(tl)}
     end
@@ -119,6 +120,7 @@ defmodule Hallux.Seq do
     case Internal.viewR(tree) do
       %Hallux.Views.NilR{} ->
         %Views.NilR{}
+
       %Hallux.Views.ConsR{hd: hd, tl: tl} ->
         %Views.ConsR{hd: hd, tl: new(tl)}
     end
@@ -139,5 +141,4 @@ defmodule Hallux.Seq do
       ])
     end
   end
-
 end
