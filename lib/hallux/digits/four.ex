@@ -10,7 +10,7 @@ defmodule Hallux.Digits.Four do
       do: {:ok, a === elem or b === elem or c === elem or d === elem}
 
     def reduce(%Four{a: a, b: b, c: c, d: d}, cmd, fun),
-      do: Enumerable.reduce([a,b,c,d], cmd, fun)
+      do: Enumerable.reduce([a, b, c, d], cmd, fun)
   end
 
   defimpl Hallux.Measured do
@@ -18,8 +18,7 @@ defmodule Hallux.Digits.Four do
     alias Hallux.Measured
 
     def size(%Four{} = four, zero, measure_fn, reduce_fn)
-      when is_function(measure_fn, 1)
-      and is_function(reduce_fn, 2),
-      do: Enum.to_list(four) |> Measured.size(zero, measure_fn, reduce_fn)
+        when is_function(measure_fn, 1) and is_function(reduce_fn, 2),
+        do: Enum.to_list(four) |> Measured.size(zero, measure_fn, reduce_fn)
   end
 end

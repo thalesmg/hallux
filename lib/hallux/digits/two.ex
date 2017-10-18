@@ -8,8 +8,7 @@ defmodule Hallux.Digits.Two do
 
     def member?(%Two{a: a, b: b}, elem), do: {:ok, a === elem or b === elem}
 
-    def reduce(%Two{a: a, b: b}, cmd, fun),
-      do: Enumerable.reduce([a,b], cmd, fun)
+    def reduce(%Two{a: a, b: b}, cmd, fun), do: Enumerable.reduce([a, b], cmd, fun)
   end
 
   defimpl Hallux.Measured do
@@ -17,8 +16,7 @@ defmodule Hallux.Digits.Two do
     alias Hallux.Measured
 
     def size(%Two{} = two, zero, measure_fn, reduce_fn)
-      when is_function(measure_fn, 1)
-      and is_function(reduce_fn, 2),
-      do: Enum.to_list(two) |> Measured.size(zero, measure_fn, reduce_fn)
+        when is_function(measure_fn, 1) and is_function(reduce_fn, 2),
+        do: Enum.to_list(two) |> Measured.size(zero, measure_fn, reduce_fn)
   end
 end

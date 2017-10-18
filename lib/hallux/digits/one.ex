@@ -8,8 +8,7 @@ defmodule Hallux.Digits.One do
 
     def member?(%One{a: a}, elem), do: {:ok, a === elem}
 
-    def reduce(%One{a: a}, cmd, fun),
-      do: Enumerable.reduce([a], cmd, fun)
+    def reduce(%One{a: a}, cmd, fun), do: Enumerable.reduce([a], cmd, fun)
   end
 
   defimpl Hallux.Measured do
@@ -17,7 +16,7 @@ defmodule Hallux.Digits.One do
     alias Hallux.Measured
 
     def size(%One{a: a}, zero, measure_fn, reduce_fn)
-      when is_function(measure_fn, 1),
-      do: Measured.size(a, zero, measure_fn, reduce_fn)
+        when is_function(measure_fn, 1),
+        do: Measured.size(a, zero, measure_fn, reduce_fn)
   end
 end
