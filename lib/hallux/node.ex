@@ -26,13 +26,12 @@ defmodule Hallux.Node do
   def to_digit(%Node2{l: l, r: r}), do: %Two{a: l, b: r}
   def to_digit(%Node3{l: l, m: m, r: r}), do: %Three{a: l, b: m, c: r}
 
-  def to_nodes([a,b], zero, measure, reduce),
-    do: [node2(a,b, zero, measure, reduce)]
-  def to_nodes([a,b,c], zero, measure, reduce),
-    do: [node3(a,b,c, zero, measure, reduce)]
-  def to_nodes([a,b,c,d], zero, measure, reduce),
-    do: [node2(a,b, zero, measure, reduce), node2(c,d, zero, measure, reduce)]
-  def to_nodes([a,b,c|rest], zero, measure, reduce),
-    do: [node3(a,b,c, zero, measure, reduce) | to_nodes(rest, zero, measure, reduce)]
+  def to_nodes([a, b], zero, measure, reduce), do: [node2(a, b, zero, measure, reduce)]
+  def to_nodes([a, b, c], zero, measure, reduce), do: [node3(a, b, c, zero, measure, reduce)]
 
+  def to_nodes([a, b, c, d], zero, measure, reduce),
+    do: [node2(a, b, zero, measure, reduce), node2(c, d, zero, measure, reduce)]
+
+  def to_nodes([a, b, c | rest], zero, measure, reduce),
+    do: [node3(a, b, c, zero, measure, reduce) | to_nodes(rest, zero, measure, reduce)]
 end
