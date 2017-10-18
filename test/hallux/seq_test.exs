@@ -5,10 +5,11 @@ defmodule Hallux.SeqTest do
   alias Hallux.Internal
   alias Hallux.Seq
 
-  import Hallux.Internal, only: [
-    empty: 0,
-    single: 1,
-  ]
+  import Hallux.Internal,
+    only: [
+      empty: 0,
+      single: 1
+    ]
 
   describe "new" do
     test "empty" do
@@ -32,11 +33,13 @@ defmodule Hallux.SeqTest do
     end
 
     test "from enum and transforming" do
-      map = Enum.with_index(-50..-1)
-      |> Map.new()
+      map =
+        Enum.with_index(-50..-1)
+        |> Map.new()
+
       list = Map.values(map)
       tree = Internal.to_tree(list)
-      assert %Seq{__tree__: tree} == Seq.new(map, & elem(&1, 1))
+      assert %Seq{__tree__: tree} == Seq.new(map, &elem(&1, 1))
     end
   end
 
@@ -88,6 +91,7 @@ defmodule Hallux.SeqTest do
       expected_right = Enum.to_list(1..100)
       assert expected_left == Seq.to_list(left)
       assert expected_right == Seq.to_list(right)
+
       for i <- 1..99 do
         assert {:ok, {left, right}} = Seq.split_at(seq, i)
         expected_left = Enum.to_list(1..i)
@@ -105,11 +109,12 @@ defmodule Hallux.SeqTest do
     test "negative indices within bounds", %{seq: seq} do
       for i <- -1..-99 do
         assert {:ok, {left, right}} = Seq.split_at(seq, i)
-        expected_left = Enum.to_list(1..100 + i)
+        expected_left = Enum.to_list(1..(100 + i))
         expected_right = (100 + i + 1)..100 |> Enum.to_list()
         assert expected_left == Seq.to_list(left)
         assert expected_right == Seq.to_list(right)
       end
+
       assert {:ok, {left, right}} = Seq.split_at(seq, -100)
       expected_left = []
       expected_right = 1..100 |> Enum.to_list()
@@ -125,17 +130,18 @@ defmodule Hallux.SeqTest do
 
   test "size/1 counts the number of elements" do
     assert 0 == Seq.size(Seq.new())
+
     for size <- 1..100 do
-      seq = Seq.new(0..size - 1)
+      seq = Seq.new(0..(size - 1))
       assert size == Seq.size(seq)
     end
   end
 
   test "empty?/1" do
     assert Seq.empty?(Seq.new())
+
     for size <- 1..100 do
-      refute Seq.empty?(Seq.new(0..size)),
-        "Seq should not be empty with 0..#{size}"
+      refute Seq.empty?(Seq.new(0..size)), "Seq should not be empty with 0..#{size}"
     end
   end
 
@@ -173,15 +179,19 @@ defmodule Hallux.SeqTest do
     end
 
     test "single deep" do
-      assert Enum.to_list(1..10) == Seq.append(Seq.new([1]), Seq.new(2..10))
-      |> Seq.to_list()
-      assert Enum.to_list(1..10) == Seq.append(Seq.new(1..9), Seq.new([10]))
-      |> Seq.to_list()
+      assert Enum.to_list(1..10) ==
+               Seq.append(Seq.new([1]), Seq.new(2..10))
+               |> Seq.to_list()
+
+      assert Enum.to_list(1..10) ==
+               Seq.append(Seq.new(1..9), Seq.new([10]))
+               |> Seq.to_list()
     end
 
     test "deep deep" do
-      assert Enum.to_list(1..20) == Seq.append(Seq.new(1..10), Seq.new(11..20))
-      |> Seq.to_list()
+      assert Enum.to_list(1..20) ==
+               Seq.append(Seq.new(1..10), Seq.new(11..20))
+               |> Seq.to_list()
     end
   end
 
@@ -199,5 +209,4 @@ defmodule Hallux.SeqTest do
       assert Enum.to_list(100..1) == Enum.to_list(Seq.viewR(seq))
     end
   end
-
 end
