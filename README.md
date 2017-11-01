@@ -1,4 +1,4 @@
-# Hallux
+# Hallux ![build status](https://travis-ci.org/thalesmg/hallux.svg?branch=master)
 
 A [Finger Tree](http://www.staff.city.ac.uk/~ross/papers/FingerTree.html) implemenation for Elixir.
 
