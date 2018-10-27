@@ -3,4 +3,8 @@
 language: elixir
 elixir:
   - 1.5.2
-otp_release: 20.0
+  - 1.6.4
+  - 1.7.3
+otp_release:
+  - 20.0
+  - 20.3
