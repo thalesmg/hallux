@@ -33,13 +33,11 @@ defmodule Hallux.SeqTest do
     end
 
     test "from enum and transforming" do
-      map =
-        Enum.with_index(-50..-1)
-        |> Map.new()
+      enum = Enum.with_index(-50..-1)
 
-      list = Map.values(map)
+      list = Enum.map(enum, &elem(&1, 1))
       tree = Internal.to_tree(list)
-      assert %Seq{__tree__: tree} == Seq.new(map, &elem(&1, 1))
+      assert %Seq{__tree__: tree} == Seq.new(enum, &elem(&1, 1))
     end
   end
 

@@ -5,12 +5,12 @@ defmodule Hallux.Mixfile do
     [
       app: :hallux,
       name: "Hallux",
-      version: "0.1.1",
+      version: "0.1.2",
       description: "Provides an implementation for Finger Trees in Elixir",
       package: package(),
       source_url: "https://github.com/thalesmg/hallux",
       homepage_url: "https://github.com/thalesmg/hallux",
-      elixir: "~> 1.5",
+      elixir: ">= 1.5.0 and < 2.0.0",
       start_permanent: Mix.env() == :prod,
       deps: deps()
     ]
