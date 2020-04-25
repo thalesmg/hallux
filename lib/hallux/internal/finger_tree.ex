@@ -265,7 +265,6 @@ defmodule Hallux.Internal.FingerTree do
   defp add_digits0(m1, %One{a: a}, %Four{a: b, b: c, c: d, d: e}, m2),
     do: append2(m1, node3(a, b, c), node2(d, e), m2)
 
-
   # Two
   defp add_digits0(m1, %Two{a: a, b: b}, %One{a: c}, m2),
     do: append1(m1, node3(a, b, c), m2)
@@ -278,7 +277,6 @@ defmodule Hallux.Internal.FingerTree do
 
   defp add_digits0(m1, %Two{a: a, b: b}, %Four{a: c, b: d, c: e, d: f}, m2),
     do: append2(m1, node3(a, b, c), node3(d, e, f), m2)
-
 
   # Three
   defp add_digits0(m1, %Three{a: a, b: b, c: c}, %One{a: d}, m2),
@@ -293,7 +291,6 @@ defmodule Hallux.Internal.FingerTree do
   defp add_digits0(m1, %Three{a: a, b: b, c: c}, %Four{a: d, b: e, c: f, d: g}, m2),
     do: append3(m1, node3(a, b, c), node2(d, e), node2(f, g), m2)
 
-
   # Four
   defp add_digits0(m1, %Four{a: a, b: b, c: c, d: d}, %One{a: e}, m2),
     do: append2(m1, node3(a, b, c), node2(d, e), m2)
@@ -307,7 +304,6 @@ defmodule Hallux.Internal.FingerTree do
   defp add_digits0(m1, %Four{a: a, b: b, c: c, d: d}, %Four{a: e, b: f, c: g, d: h}, m2),
     do: append3(m1, node3(a, b, c), node3(d, e, f), node2(g, h), m2)
 
-
   defp append1(%Empty{}, a, xs),
     do: cons(xs, a)
 
@@ -320,34 +316,37 @@ defmodule Hallux.Internal.FingerTree do
   defp append1(xs, a, %Single{x: x}),
     do: snoc(snoc(xs, a), x)
 
-  defp append1(%Deep{
-        monoid: mo,
-        size: s1,
-        l: pr1,
-        m: m1,
-        r: sf1
-               }, a,
-    %Deep{
-      monoid: mo,
-      size: s2,
-      l: pr2,
-      m: m2,
-      r: sf2
-    }),
-    do: %Deep{
-          monoid: mo,
-          size: Monoid.mappend(
-            s1,
-            Monoid.mappend(
-              Measured.size(a),
-              s2
-            )
-          ),
-          l: pr1,
-          m: add_digits1(m1, sf1, a, pr2, m2),
-          r: sf2
-    }
-
+  defp append1(
+         %Deep{
+           monoid: mo,
+           size: s1,
+           l: pr1,
+           m: m1,
+           r: sf1
+         },
+         a,
+         %Deep{
+           monoid: mo,
+           size: s2,
+           l: pr2,
+           m: m2,
+           r: sf2
+         }
+       ),
+       do: %Deep{
+         monoid: mo,
+         size:
+           Monoid.mappend(
+             s1,
+             Monoid.mappend(
+               Measured.size(a),
+               s2
+             )
+           ),
+         l: pr1,
+         m: add_digits1(m1, sf1, a, pr2, m2),
+         r: sf2
+       }
 
   # One
   defp add_digits1(m1, %One{a: a}, b, %One{a: c}, m2),
@@ -362,7 +361,6 @@ defmodule Hallux.Internal.FingerTree do
   defp add_digits1(m1, %One{a: a}, b, %Four{a: c, b: d, c: e, d: f}, m2),
     do: append2(m1, node3(a, b, c), node3(d, e, f), m2)
 
-
   # Two
   defp add_digits1(m1, %Two{a: a, b: b}, c, %One{a: d}, m2),
     do: append2(m1, node2(a, b), node2(c, d), m2)
@@ -375,7 +373,6 @@ defmodule Hallux.Internal.FingerTree do
 
   defp add_digits1(m1, %Two{a: a, b: b}, c, %Four{a: d, b: e, c: f, d: g}, m2),
     do: append3(m1, node3(a, b, c), node2(d, e), node2(f, g), m2)
-
 
   # Three
   defp add_digits1(m1, %Three{a: a, b: b, c: c}, d, %One{a: e}, m2),
@@ -390,7 +387,6 @@ defmodule Hallux.Internal.FingerTree do
   defp add_digits1(m1, %Three{a: a, b: b, c: c}, d, %Four{a: e, b: f, c: g, d: h}, m2),
     do: append3(m1, node3(a, b, c), node3(d, e, f), node2(g, h), m2)
 
-
   # Four
   defp add_digits1(m1, %Four{a: a, b: b, c: c, d: d}, e, %One{a: f}, m2),
     do: append2(m1, node3(a, b, c), node3(d, e, f), m2)
@@ -404,8 +400,6 @@ defmodule Hallux.Internal.FingerTree do
   defp add_digits1(m1, %Four{a: a, b: b, c: c, d: d}, e, %Four{a: f, b: g, c: h, d: i}, m2),
     do: append3(m1, node3(a, b, c), node3(d, e, f), node3(g, h, i), m2)
 
-
-
   defp append2(%Empty{}, a, b, xs),
     do: cons(cons(xs, b), a)
 
@@ -418,39 +412,41 @@ defmodule Hallux.Internal.FingerTree do
   defp append2(xs, a, b, %Single{x: x}),
     do: snoc(snoc(snoc(xs, a), b), x)
 
-  defp append2(%Deep{
-        monoid: mo,
-        size: s1,
-        l: pr1,
-        m: m1,
-        r: sf1
-               },
-    a, b,
-    %Deep{
-        monoid: mo,
-        size: s2,
-        l: pr2,
-        m: m2,
-        r: sf2
-               }),
-    do: %Deep{
-          monoid: mo,
-          size: Monoid.mappend(
-            s1,
-            Monoid.mappend(
-              Measured.size(a),
-              Monoid.mappend(
-                Measured.size(b),
-                s2
-              )
-            )
-          ),
-          l: pr1,
-          m: add_digits2(m1, sf1, a, b, pr2, m2),
-          r: sf2
-    }
-
-
+  defp append2(
+         %Deep{
+           monoid: mo,
+           size: s1,
+           l: pr1,
+           m: m1,
+           r: sf1
+         },
+         a,
+         b,
+         %Deep{
+           monoid: mo,
+           size: s2,
+           l: pr2,
+           m: m2,
+           r: sf2
+         }
+       ),
+       do: %Deep{
+         monoid: mo,
+         size:
+           Monoid.mappend(
+             s1,
+             Monoid.mappend(
+               Measured.size(a),
+               Monoid.mappend(
+                 Measured.size(b),
+                 s2
+               )
+             )
+           ),
+         l: pr1,
+         m: add_digits2(m1, sf1, a, b, pr2, m2),
+         r: sf2
+       }
 
   # One
   defp add_digits2(m1, %One{a: a}, b, c, %One{a: d}, m2),
@@ -465,7 +461,6 @@ defmodule Hallux.Internal.FingerTree do
   defp add_digits2(m1, %One{a: a}, b, c, %Four{a: d, b: e, c: f, d: g}, m2),
     do: append3(m1, node3(a, b, c), node2(d, e), node2(f, g), m2)
 
-
   # Two
   defp add_digits2(m1, %Two{a: a, b: b}, c, d, %One{a: e}, m2),
     do: append2(m1, node3(a, b, c), node2(d, e), m2)
@@ -478,7 +473,6 @@ defmodule Hallux.Internal.FingerTree do
 
   defp add_digits2(m1, %Two{a: a, b: b}, c, d, %Four{a: e, b: f, c: g, d: h}, m2),
     do: append3(m1, node3(a, b, c), node3(d, e, f), node2(g, h), m2)
-
 
   # Three
   defp add_digits2(m1, %Three{a: a, b: b, c: c}, d, e, %One{a: f}, m2),
@@ -493,7 +487,6 @@ defmodule Hallux.Internal.FingerTree do
   defp add_digits2(m1, %Three{a: a, b: b, c: c}, d, e, %Four{a: f, b: g, c: h, d: i}, m2),
     do: append3(m1, node3(a, b, c), node3(d, e, f), node3(g, h, i), m2)
 
-
   # Four
   defp add_digits2(m1, %Four{a: a, b: b, c: c, d: d}, e, f, %One{a: g}, m2),
     do: append3(m1, node3(a, b, c), node2(d, e), node2(f, g), m2)
@@ -507,7 +500,6 @@ defmodule Hallux.Internal.FingerTree do
   defp add_digits2(m1, %Four{a: a, b: b, c: c, d: d}, e, f, %Four{a: g, b: h, c: i, d: j}, m2),
     do: append4(m1, node3(a, b, c), node3(d, e, f), node2(g, h), node2(i, j), m2)
 
-
   defp append3(%Empty{}, a, b, c, xs),
     do: xs |> cons(c) |> cons(b) |> cons(a)
 
@@ -520,42 +512,45 @@ defmodule Hallux.Internal.FingerTree do
   defp append3(xs, a, b, c, %Single{x: x}),
     do: xs |> snoc(a) |> snoc(b) |> snoc(c) |> snoc(x)
 
-  defp append3(%Deep{
-        monoid: mo,
-        size: s1,
-        l: pr1,
-        m: m1,
-        r: sf1
-               },
-    a, b, c,
-    %Deep{
-        monoid: mo,
-        size: s2,
-        l: pr2,
-        m: m2,
-        r: sf2
-               }
-    ),
-    do: %Deep{
-          monoid: mo,
-          size: Monoid.mappend(
-            s1,
-            Monoid.mappend(
-              Measured.size(a),
-              Monoid.mappend(
-                Measured.size(b),
-                Monoid.mappend(
-                  Measured.size(c),
-                  s2
-                )
-              )
-            )
-          ),
-          l: pr1,
-          m: add_digits3(m1, sf1, a, b, c, pr2, m2),
-          r: sf2
-    }
-
+  defp append3(
+         %Deep{
+           monoid: mo,
+           size: s1,
+           l: pr1,
+           m: m1,
+           r: sf1
+         },
+         a,
+         b,
+         c,
+         %Deep{
+           monoid: mo,
+           size: s2,
+           l: pr2,
+           m: m2,
+           r: sf2
+         }
+       ),
+       do: %Deep{
+         monoid: mo,
+         size:
+           Monoid.mappend(
+             s1,
+             Monoid.mappend(
+               Measured.size(a),
+               Monoid.mappend(
+                 Measured.size(b),
+                 Monoid.mappend(
+                   Measured.size(c),
+                   s2
+                 )
+               )
+             )
+           ),
+         l: pr1,
+         m: add_digits3(m1, sf1, a, b, c, pr2, m2),
+         r: sf2
+       }
 
   # One
   defp add_digits3(m1, %One{a: a}, b, c, d, %One{a: e}, m2),
@@ -570,7 +565,6 @@ defmodule Hallux.Internal.FingerTree do
   defp add_digits3(m1, %One{a: a}, b, c, d, %Four{a: e, b: f, c: g, d: h}, m2),
     do: append3(m1, node3(a, b, c), node3(d, e, f), node2(g, h), m2)
 
-
   # Two
   defp add_digits3(m1, %Two{a: a, b: b}, c, d, e, %One{a: f}, m2),
     do: append2(m1, node3(a, b, c), node3(d, e, f), m2)
@@ -583,7 +577,6 @@ defmodule Hallux.Internal.FingerTree do
 
   defp add_digits3(m1, %Two{a: a, b: b}, c, d, e, %Four{a: f, b: g, c: h, d: i}, m2),
     do: append3(m1, node3(a, b, c), node3(d, e, f), node3(g, h, i), m2)
-
 
   # Three
   defp add_digits3(m1, %Three{a: a, b: b, c: c}, d, e, f, %One{a: g}, m2),
@@ -598,7 +591,6 @@ defmodule Hallux.Internal.FingerTree do
   defp add_digits3(m1, %Three{a: a, b: b, c: c}, d, e, f, %Four{a: g, b: h, c: i, d: j}, m2),
     do: append4(m1, node3(a, b, c), node3(d, e, f), node2(g, h), node2(i, j), m2)
 
-
   # Four
   defp add_digits3(m1, %Four{a: a, b: b, c: c, d: d}, e, f, g, %One{a: h}, m2),
     do: append3(m1, node3(a, b, c), node3(d, e, f), node2(g, h), m2)
@@ -612,9 +604,6 @@ defmodule Hallux.Internal.FingerTree do
   defp add_digits3(m1, %Four{a: a, b: b, c: c, d: d}, e, f, g, %Four{a: h, b: i, c: j, d: k}, m2),
     do: append4(m1, node3(a, b, c), node3(d, e, f), node3(g, h, i), node2(j, k), m2)
 
-
-
-
   defp append4(%Empty{}, a, b, c, d, xs),
     do: xs |> cons(d) |> cons(c) |> cons(b) |> cons(a)
 
@@ -627,46 +616,49 @@ defmodule Hallux.Internal.FingerTree do
   defp append4(xs, a, b, c, d, %Single{x: x}),
     do: xs |> snoc(a) |> snoc(b) |> snoc(c) |> snoc(d) |> snoc(x)
 
-  defp append4(%Deep{
-        monoid: mo,
-        size: s1,
-        l: pr1,
-        m: m1,
-        r: sf1
-               },
-    a, b, c, d,
-    %Deep{
-        monoid: mo,
-        size: s2,
-        l: pr2,
-        m: m2,
-        r: sf2
-               }
-    ),
-    do: %Deep{
-          monoid: mo,
-          size: Monoid.mappend(
-            s1,
-            Monoid.mappend(
-              Measured.size(a),
-              Monoid.mappend(
-                Measured.size(b),
-                Monoid.mappend(
-                  Measured.size(c),
-                  Monoid.mappend(
-                    Measured.size(d),
-                    s2
-                  )
-                )
-              )
-            )
-          ),
-          l: pr1,
-          m: add_digits4(m1, sf1, a, b, c, d, pr2, m2),
-          r: sf2
-    }
-
-
+  defp append4(
+         %Deep{
+           monoid: mo,
+           size: s1,
+           l: pr1,
+           m: m1,
+           r: sf1
+         },
+         a,
+         b,
+         c,
+         d,
+         %Deep{
+           monoid: mo,
+           size: s2,
+           l: pr2,
+           m: m2,
+           r: sf2
+         }
+       ),
+       do: %Deep{
+         monoid: mo,
+         size:
+           Monoid.mappend(
+             s1,
+             Monoid.mappend(
+               Measured.size(a),
+               Monoid.mappend(
+                 Measured.size(b),
+                 Monoid.mappend(
+                   Measured.size(c),
+                   Monoid.mappend(
+                     Measured.size(d),
+                     s2
+                   )
+                 )
+               )
+             )
+           ),
+         l: pr1,
+         m: add_digits4(m1, sf1, a, b, c, d, pr2, m2),
+         r: sf2
+       }
 
   # One
   defp add_digits4(m1, %One{a: a}, b, c, d, e, %One{a: f}, m2),
@@ -681,7 +673,6 @@ defmodule Hallux.Internal.FingerTree do
   defp add_digits4(m1, %One{a: a}, b, c, d, e, %Four{a: f, b: g, c: h, d: i}, m2),
     do: append3(m1, node3(a, b, c), node3(d, e, f), node3(g, h, i), m2)
 
-
   # Two
   defp add_digits4(m1, %Two{a: a, b: b}, c, d, e, f, %One{a: g}, m2),
     do: append3(m1, node3(a, b, c), node2(d, e), node2(f, g), m2)
@@ -694,7 +685,6 @@ defmodule Hallux.Internal.FingerTree do
 
   defp add_digits4(m1, %Two{a: a, b: b}, c, d, e, f, %Four{a: g, b: h, c: i, d: j}, m2),
     do: append4(m1, node3(a, b, c), node3(d, e, f), node2(g, h), node2(i, j), m2)
-
 
   # Three
   defp add_digits4(m1, %Three{a: a, b: b, c: c}, d, e, f, g, %One{a: h}, m2),
@@ -709,7 +699,6 @@ defmodule Hallux.Internal.FingerTree do
   defp add_digits4(m1, %Three{a: a, b: b, c: c}, d, e, f, g, %Four{a: h, b: i, c: j, d: k}, m2),
     do: append4(m1, node3(a, b, c), node3(d, e, f), node3(g, h, i), node2(j, k), m2)
 
-
   # Four
   defp add_digits4(m1, %Four{a: a, b: b, c: c, d: d}, e, f, g, h, %One{a: i}, m2),
     do: append3(m1, node3(a, b, c), node3(d, e, f), node3(g, h, i), m2)
@@ -720,6 +709,15 @@ defmodule Hallux.Internal.FingerTree do
   defp add_digits4(m1, %Four{a: a, b: b, c: c, d: d}, e, f, g, h, %Three{a: i, b: j, c: k}, m2),
     do: append4(m1, node3(a, b, c), node3(d, e, f), node3(g, h, i), node2(j, k), m2)
 
-  defp add_digits4(m1, %Four{a: a, b: b, c: c, d: d}, e, f, g, h, %Four{a: i, b: j, c: k, d: l}, m2),
-    do: append4(m1, node3(a, b, c), node3(d, e, f), node3(g, h, i), node3(j, k, l), m2)
+  defp add_digits4(
+         m1,
+         %Four{a: a, b: b, c: c, d: d},
+         e,
+         f,
+         g,
+         h,
+         %Four{a: i, b: j, c: k, d: l},
+         m2
+       ),
+       do: append4(m1, node3(a, b, c), node3(d, e, f), node3(g, h, i), node3(j, k, l), m2)
 end
