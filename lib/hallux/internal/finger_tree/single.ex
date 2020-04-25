@@ -3,7 +3,7 @@ defmodule Hallux.Internal.FingerTree.Single do
 
   defimpl Hallux.Protocol.Measured do
     alias Hallux.Internal.FingerTree.Single
-    alias Hallux.Protocol.Monoid
+    alias Hallux.Protocol.Measured
 
     def size(%Single{x: x}), do: Measured.size(x)
 

@@ -3,6 +3,7 @@ defmodule Hallux.Internal.FingerTree do
   alias Hallux.Internal.Digit.Two
   alias Hallux.Internal.Digit.Three
   alias Hallux.Internal.Digit.Four
+  alias Hallux.Internal.Node.Node2
   alias Hallux.Internal.Node.Node3
   alias Hallux.Internal.FingerTree.Empty
   alias Hallux.Internal.FingerTree.Single
@@ -176,6 +177,8 @@ defmodule Hallux.Internal.FingerTree do
         r: %Two{a: a, b: b}
       }
 
+  def concat(xs, ys), do: append0(xs, ys)
+
   defp deep(d1, t, d2),
     do: %Deep{
       monoid: t.monoid,
@@ -287,7 +290,7 @@ defmodule Hallux.Internal.FingerTree do
   defp add_digits0(m1, %Three{a: a, b: b, c: c}, %Three{a: d, b: e, c: f}, m2),
     do: append2(m1, node3(a, b, c), node3(d, e, f), m2)
 
-  defp add_digits0(m1, %Three{a: a, b: b, c: c}, %Four{a: d, b: e, c: f, d: h}, m2),
+  defp add_digits0(m1, %Three{a: a, b: b, c: c}, %Four{a: d, b: e, c: f, d: g}, m2),
     do: append3(m1, node3(a, b, c), node2(d, e), node2(f, g), m2)
 
 
@@ -398,7 +401,7 @@ defmodule Hallux.Internal.FingerTree do
   defp add_digits1(m1, %Four{a: a, b: b, c: c, d: d}, e, %Three{a: f, b: g, c: h}, m2),
     do: append3(m1, node3(a, b, c), node3(d, e, f), node2(g, h), m2)
 
-  defp add_digits1(m1, %Four{a: a, b: b, c: c, d: d}, e, %Three{a: f, b: g, c: h, d: i}, m2),
+  defp add_digits1(m1, %Four{a: a, b: b, c: c, d: d}, e, %Four{a: f, b: g, c: h, d: i}, m2),
     do: append3(m1, node3(a, b, c), node3(d, e, f), node3(g, h, i), m2)
 
 
@@ -663,4 +666,60 @@ defmodule Hallux.Internal.FingerTree do
           r: sf2
     }
 
+
+
+  # One
+  defp add_digits4(m1, %One{a: a}, b, c, d, e, %One{a: f}, m2),
+    do: append2(m1, node3(a, b, c), node3(d, e, f), m2)
+
+  defp add_digits4(m1, %One{a: a}, b, c, d, e, %Two{a: f, b: g}, m2),
+    do: append3(m1, node3(a, b, c), node2(d, e), node2(f, g), m2)
+
+  defp add_digits4(m1, %One{a: a}, b, c, d, e, %Three{a: f, b: g, c: h}, m2),
+    do: append3(m1, node3(a, b, c), node3(d, e, f), node2(g, h), m2)
+
+  defp add_digits4(m1, %One{a: a}, b, c, d, e, %Four{a: f, b: g, c: h, d: i}, m2),
+    do: append3(m1, node3(a, b, c), node3(d, e, f), node3(g, h, i), m2)
+
+
+  # Two
+  defp add_digits4(m1, %Two{a: a, b: b}, c, d, e, f, %One{a: g}, m2),
+    do: append3(m1, node3(a, b, c), node2(d, e), node2(f, g), m2)
+
+  defp add_digits4(m1, %Two{a: a, b: b}, c, d, e, f, %Two{a: g, b: h}, m2),
+    do: append3(m1, node3(a, b, c), node3(d, e, f), node2(g, h), m2)
+
+  defp add_digits4(m1, %Two{a: a, b: b}, c, d, e, f, %Three{a: g, b: h, c: i}, m2),
+    do: append3(m1, node3(a, b, c), node3(d, e, f), node3(g, h, i), m2)
+
+  defp add_digits4(m1, %Two{a: a, b: b}, c, d, e, f, %Four{a: g, b: h, c: i, d: j}, m2),
+    do: append4(m1, node3(a, b, c), node3(d, e, f), node2(g, h), node2(i, j), m2)
+
+
+  # Three
+  defp add_digits4(m1, %Three{a: a, b: b, c: c}, d, e, f, g, %One{a: h}, m2),
+    do: append3(m1, node3(a, b, c), node3(d, e, f), node2(g, h), m2)
+
+  defp add_digits4(m1, %Three{a: a, b: b, c: c}, d, e, f, g, %Two{a: h, b: i}, m2),
+    do: append3(m1, node3(a, b, c), node3(d, e, f), node3(g, h, i), m2)
+
+  defp add_digits4(m1, %Three{a: a, b: b, c: c}, d, e, f, g, %Three{a: h, b: i, c: j}, m2),
+    do: append4(m1, node3(a, b, c), node3(d, e, f), node2(g, h), node2(i, j), m2)
+
+  defp add_digits4(m1, %Three{a: a, b: b, c: c}, d, e, f, g, %Four{a: h, b: i, c: j, d: k}, m2),
+    do: append4(m1, node3(a, b, c), node3(d, e, f), node3(g, h, i), node2(j, k), m2)
+
+
+  # Four
+  defp add_digits4(m1, %Four{a: a, b: b, c: c, d: d}, e, f, g, h, %One{a: i}, m2),
+    do: append3(m1, node3(a, b, c), node3(d, e, f), node3(g, h, i), m2)
+
+  defp add_digits4(m1, %Four{a: a, b: b, c: c, d: d}, e, f, g, h, %Two{a: i, b: j}, m2),
+    do: append4(m1, node3(a, b, c), node3(d, e, f), node2(g, h), node2(i, j), m2)
+
+  defp add_digits4(m1, %Four{a: a, b: b, c: c, d: d}, e, f, g, h, %Three{a: i, b: j, c: k}, m2),
+    do: append4(m1, node3(a, b, c), node3(d, e, f), node3(g, h, i), node2(j, k), m2)
+
+  defp add_digits4(m1, %Four{a: a, b: b, c: c, d: d}, e, f, g, h, %Four{a: i, b: j, c: k, d: l}, m2),
+    do: append4(m1, node3(a, b, c), node3(d, e, f), node3(g, h, i), node3(j, k, l), m2)
 end
