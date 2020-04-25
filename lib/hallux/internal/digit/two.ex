@@ -11,7 +11,7 @@ defmodule Hallux.Internal.Digit.Two do
     end
 
     def reducel(%Two{a: a, b: b}, acc, lfn) do
-      Reduce.reducel([a, b], acc, lfn)
+      Reduce.reducer([b, a], acc, lfn)
     end
   end
 

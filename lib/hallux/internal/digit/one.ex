@@ -11,7 +11,7 @@ defmodule Hallux.Internal.Digit.One do
     end
 
     def reducel(%One{a: a}, acc, lfn) do
-      Reduce.reducel([a], acc, lfn)
+      Reduce.reducer([a], acc, lfn)
     end
   end
 

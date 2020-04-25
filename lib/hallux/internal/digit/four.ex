@@ -11,7 +11,7 @@ defmodule Hallux.Internal.Digit.Four do
     end
 
     def reducel(%Four{a: a, b: b, c: c, d: d}, acc, lfn) do
-      Reduce.reducel([a, b, c, d], acc, lfn)
+      Reduce.reducer([d, c, b, a], acc, lfn)
     end
   end
 
