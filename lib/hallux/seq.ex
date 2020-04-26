@@ -32,22 +32,24 @@ defmodule Hallux.Seq do
 
     def reduce(_seq, {:halt, acc}, _fun), do: {:halted, acc}
     def reduce(seq, {:suspend, acc}, fun), do: {:suspended, acc, &reduce(seq, &1, fun)}
+
     def reduce(%Seq{t: t}, {:cont, acc}, fun) do
       case FingerTree.view_l(t) do
         nil -> {:done, acc}
-        {x, rest} -> reduce(rest, fun.(x, acc), fun)
+        {%Elem{e: x}, rest} -> reduce(%Seq{t: rest}, fun.(x, acc), fun)
       end
     end
 
     def slice(seq = %Seq{t: t}) do
       %Size{s: size} = Measured.size(t)
+
       slicing_fun = fn start, len ->
         %Seq{t: t_} =
           seq
           |> Seq.drop(start)
           |> Seq.take(len)
 
-        Reduce.reducer(t_, [], & [&1 | &2])
+        Reduce.reducer(t_, [], &[&1.e | &2])
       end
 
       {:ok, size, slicing_fun}

@@ -7,11 +7,11 @@ defmodule Hallux.Internal.Digit.Two do
     alias Hallux.Protocol.Reduce
 
     def reducer(%Two{a: a, b: b}, acc, rfn) do
-      Reduce.reducer([a, b], acc, rfn)
+      Reduce.reducer([b, a], acc, rfn)
     end
 
     def reducel(%Two{a: a, b: b}, acc, lfn) do
-      Reduce.reducer([b, a], acc, lfn)
+      Reduce.reducer([a, b], acc, lfn)
     end
   end
 

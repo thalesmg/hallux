@@ -6,11 +6,11 @@ defmodule Hallux.Internal.Node.Node3 do
     alias Hallux.Protocol.Reduce
 
     def reducer(%Node3{l: l, m: m, r: r}, acc, rfn) do
-      Reduce.reducer([l, m, r], acc, rfn)
+      Reduce.reducer([r, m, l], acc, rfn)
     end
 
     def reducel(%Node3{l: l, m: m, r: r}, acc, lfn) do
-      Reduce.reducer([r, m, l], acc, lfn)
+      Reduce.reducer([l, m, r], acc, lfn)
     end
   end
 

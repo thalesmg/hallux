@@ -7,11 +7,11 @@ defmodule Hallux.Internal.Digit.Three do
     alias Hallux.Protocol.Reduce
 
     def reducer(%Three{a: a, b: b, c: c}, acc, rfn) do
-      Reduce.reducer([a, b, c], acc, rfn)
+      Reduce.reducer([c, b, a], acc, rfn)
     end
 
     def reducel(%Three{a: a, b: b, c: c}, acc, lfn) do
-      Reduce.reducer([c, b, a], acc, lfn)
+      Reduce.reducer([a, b, c], acc, lfn)
     end
   end
 
