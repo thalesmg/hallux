@@ -1,18 +1,20 @@
 defmodule Hallux.Mixfile do
   use Mix.Project
 
+  @version "1.0.0"
+
   def project do
     [
       app: :hallux,
       name: "Hallux",
-      version: "0.1.1",
+      version: @version,
       description: "Provides an implementation for Finger Trees in Elixir",
       package: package(),
       source_url: "https://github.com/thalesmg/hallux",
       homepage_url: "https://github.com/thalesmg/hallux",
       elixir: "~> 1.5",
-      start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      docs: docs()
     ]
   end
 
@@ -24,7 +26,7 @@ defmodule Hallux.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ex_doc, ">= 0.0.0", only: :dev},
+      {:ex_doc, "~> 0.21", only: :dev, runtime: false},
       {:stream_data, "~> 0.4", only: :test}
     ]
   end
@@ -35,6 +37,14 @@ defmodule Hallux.Mixfile do
       licenses: ["GNU GPLv3"],
       maintainers: ["Thales Macedo Garitezi", "Diego Vinícius e Souza"],
       links: %{github: "https://github.com/thalesmg/hallux"}
+    ]
+  end
+
+  defp docs() do
+    [
+      main: "readme",
+      source_ref: "v#{@version}",
+      extras: ["README.md"]
     ]
   end
 end
