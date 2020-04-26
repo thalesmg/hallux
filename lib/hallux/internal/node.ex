@@ -4,6 +4,12 @@ defmodule Hallux.Internal.Node do
   alias Hallux.Protocol.Measured
   alias Hallux.Protocol.Monoid
 
+  @type value :: term
+  @opaque t(value) ::
+            %Node2{l: value, r: value}
+            | %Node3{l: value, m: value, r: value}
+  @type t :: t(term)
+
   def node2(a, b) do
     %Node2{
       size:
