@@ -21,8 +21,8 @@ defmodule Hallux.Internal.Digit.One do
     alias Hallux.Protocol.Monoid
     alias Hallux.Protocol.Reduce
 
-    def size(one) do
-      Measured.size(one)
+    def size(%One{a: a}) do
+      Measured.size(a)
     end
 
     def monoid_type(%One{a: a}), do: Measured.monoid_type(a)
