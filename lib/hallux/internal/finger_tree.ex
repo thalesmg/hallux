@@ -195,6 +195,24 @@ defmodule Hallux.Internal.FingerTree do
   def take_until(t, p), do: split(t, p) |> elem(0)
   def drop_until(t, p), do: split(t, p) |> elem(1)
 
+  def view_l(%Empty{}), do: nil
+  def view_l(%Single{monoid: mo, x: x}), do: {x, %Empty{monoid: mo}}
+
+  def view_l(%Deep{monoid: mo, l: %One{a: x}, m: m, r: sf}),
+    do: {x, rot_l(m, sf)}
+
+  def view_l(%Deep{monoid: mo, l: pr, m: m, r: sf}),
+    do: {lhead_digit(pr), deep(ltail_digit(pr), m, sf)}
+
+  def view_r(%Empty{}), do: nil
+  def view_r(%Single{monoid: mo, x: x}), do: {%Empty{monoid: mo}, x}
+
+  def view_r(%Deep{l: pr, m: m, r: %One{a: x}}),
+    do: {rot_r(pr, m), x}
+
+  def view_r(%Deep{monoid: mo, l: pr, m: m, r: sf}),
+    do: {deep(pr, m, rtail_digit(sf)), rhead_digit(sf)}
+
   defp deep(d1, t, d2) do
     %Deep{
       monoid: t.monoid,
@@ -885,24 +903,6 @@ defmodule Hallux.Internal.FingerTree do
         }
     end
   end
-
-  defp view_l(%Empty{}), do: nil
-  defp view_l(%Single{monoid: mo, x: x}), do: {x, %Empty{monoid: mo}}
-
-  defp view_l(%Deep{monoid: mo, l: %One{a: x}, m: m, r: sf}),
-    do: {x, rot_l(m, sf)}
-
-  defp view_l(%Deep{monoid: mo, l: pr, m: m, r: sf}),
-    do: {lhead_digit(pr), deep(ltail_digit(pr), m, sf)}
-
-  defp view_r(%Empty{}), do: nil
-  defp view_r(%Single{monoid: mo, x: x}), do: {%Empty{monoid: mo}, x}
-
-  defp view_r(%Deep{l: pr, m: m, r: %One{a: x}}),
-    do: {rot_r(pr, m), x}
-
-  defp view_r(%Deep{monoid: mo, l: pr, m: m, r: sf}),
-    do: {deep(pr, m, rtail_digit(sf)), rhead_digit(sf)}
 
   defp lhead_digit(%One{a: a}), do: a
   defp lhead_digit(%Two{a: a}), do: a

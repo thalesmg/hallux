@@ -20,10 +20,38 @@ defmodule Hallux.Seq do
     do: %__MODULE__{t: FingerTree.drop_until(t, fn %Size{s: s} -> s > n end)}
 
   defimpl Enumerable do
+    alias Hallux.Internal.FingerTree
+    alias Hallux.Internal.Size
     alias Hallux.Protocol.Measured
+    alias Hallux.Protocol.Reduce
     alias Hallux.Seq
 
     def count(%Seq{t: t}), do: {:ok, Measured.size(t)}
+
+    def member?(_, _), do: {:error, __MODULE__}
+
+    def reduce(_seq, {:halt, acc}, _fun), do: {:halted, acc}
+    def reduce(seq, {:suspend, acc}, fun), do: {:suspended, acc, &reduce(seq, &1, fun)}
+    def reduce(%Seq{t: t}, {:cont, acc}, fun) do
+      case FingerTree.view_l(t) do
+        nil -> {:done, acc}
+        {x, rest} -> reduce(rest, fun.(x, acc), fun)
+      end
+    end
+
+    def slice(seq = %Seq{t: t}) do
+      %Size{s: size} = Measured.size(t)
+      slicing_fun = fn start, len ->
+        %Seq{t: t_} =
+          seq
+          |> Seq.drop(start)
+          |> Seq.take(len)
+
+        Reduce.reducer(t_, [], & [&1 | &2])
+      end
+
+      {:ok, size, slicing_fun}
+    end
   end
 
   defimpl Collectable do
