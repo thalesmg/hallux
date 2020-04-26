@@ -40,7 +40,6 @@ defmodule Hallux.Internal.FingerTree.Deep do
 
   defimpl Hallux.Protocol.Measured do
     alias Hallux.Internal.FingerTree.Deep
-    alias Hallux.Protocol.Monoid
 
     def size(%Deep{size: size}), do: size
 

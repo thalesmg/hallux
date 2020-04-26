@@ -3,9 +3,7 @@ defmodule Hallux.Seq do
 
   alias Hallux.Internal.Elem
   alias Hallux.Internal.FingerTree
-  alias Hallux.Internal.FingerTree.Deep
   alias Hallux.Internal.FingerTree.Empty
-  alias Hallux.Internal.FingerTree.Single
   alias Hallux.Protocol.Measured
   alias Hallux.Protocol.Reduce
   alias Hallux.Internal.Size

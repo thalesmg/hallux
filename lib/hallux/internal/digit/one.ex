@@ -18,8 +18,6 @@ defmodule Hallux.Internal.Digit.One do
   defimpl Hallux.Protocol.Measured do
     alias Hallux.Internal.Digit.One
     alias Hallux.Protocol.Measured
-    alias Hallux.Protocol.Monoid
-    alias Hallux.Protocol.Reduce
 
     def size(%One{a: a}) do
       Measured.size(a)

@@ -3,10 +3,9 @@ defmodule Hallux.Internal.FingerTree.Empty do
 
   defimpl Hallux.Protocol.Reduce do
     alias Hallux.Internal.FingerTree.Empty
-    alias Hallux.Protocol.Reduce
 
-    def reducer(%Empty{}, acc, rfn), do: acc
-    def reducel(%Empty{}, acc, lfn), do: acc
+    def reducer(%Empty{}, acc, _rfn), do: acc
+    def reducel(%Empty{}, acc, _lfn), do: acc
   end
 
   defimpl Hallux.Protocol.Measured do

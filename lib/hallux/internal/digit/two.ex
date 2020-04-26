@@ -19,7 +19,6 @@ defmodule Hallux.Internal.Digit.Two do
     alias Hallux.Internal.Digit.Two
     alias Hallux.Protocol.Measured
     alias Hallux.Protocol.Monoid
-    alias Hallux.Protocol.Reduce
 
     def size(%Two{a: a, b: b}) do
       Monoid.mappend(

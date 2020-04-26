@@ -180,7 +180,7 @@ defmodule Hallux.Internal.FingerTree do
 
   def concat(xs, ys), do: append0(xs, ys)
 
-  def split(t = %Empty{monoid: mo}, _p), do: {t, t}
+  def split(t = %Empty{}, _p), do: {t, t}
 
   def split(t, p) do
     %Split{l: l, x: x, r: r} = split_tree(p, Monoid.mempty(Measured.monoid_type(t)), t)
@@ -198,10 +198,10 @@ defmodule Hallux.Internal.FingerTree do
   def view_l(%Empty{}), do: nil
   def view_l(%Single{monoid: mo, x: x}), do: {x, %Empty{monoid: mo}}
 
-  def view_l(%Deep{monoid: mo, l: %One{a: x}, m: m, r: sf}),
+  def view_l(%Deep{l: %One{a: x}, m: m, r: sf}),
     do: {x, rot_l(m, sf)}
 
-  def view_l(%Deep{monoid: mo, l: pr, m: m, r: sf}),
+  def view_l(%Deep{l: pr, m: m, r: sf}),
     do: {lhead_digit(pr), deep(ltail_digit(pr), m, sf)}
 
   def view_r(%Empty{}), do: nil
@@ -210,7 +210,7 @@ defmodule Hallux.Internal.FingerTree do
   def view_r(%Deep{l: pr, m: m, r: %One{a: x}}),
     do: {rot_r(pr, m), x}
 
-  def view_r(%Deep{monoid: mo, l: pr, m: m, r: sf}),
+  def view_r(%Deep{l: pr, m: m, r: sf}),
     do: {deep(pr, m, rtail_digit(sf)), rhead_digit(sf)}
 
   defp deep(d1, t, d2) do
@@ -914,12 +914,12 @@ defmodule Hallux.Internal.FingerTree do
   defp rhead_digit(%Three{c: c}), do: c
   defp rhead_digit(%Four{d: d}), do: d
 
-  defp ltail_digit(%One{a: a}), do: raise("ltail_digit One")
+  defp ltail_digit(%One{}), do: raise("ltail_digit One")
   defp ltail_digit(%Two{b: b}), do: %One{a: b}
   defp ltail_digit(%Three{b: b, c: c}), do: %Two{a: b, b: c}
   defp ltail_digit(%Four{b: b, c: c, d: d}), do: %Three{a: b, b: c, c: d}
 
-  defp rtail_digit(%One{a: a}), do: raise("rtail_digit One")
+  defp rtail_digit(%One{}), do: raise("rtail_digit One")
   defp rtail_digit(%Two{a: a}), do: %One{a: a}
   defp rtail_digit(%Three{a: a, b: b}), do: %Two{a: a, b: b}
   defp rtail_digit(%Four{a: a, b: b, c: c}), do: %Three{a: a, b: b, c: c}
