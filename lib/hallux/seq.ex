@@ -8,6 +8,26 @@ defmodule Hallux.Seq do
   (taken from [here](http://hackage.haskell.org/package/fingertree-0.1.4.2/docs/Data-FingerTree.html#t:FingerTree))
 
   Supports efficient random access like accessing the nth element.
+
+  A sequence can be constructed using `Hallux.Seq.new/0`:
+
+      iex> new()
+      #HalluxSeq<[]>
+
+  Elements can be inserted at the left end using `Hallux.Seq.cons/2`:
+
+      iex> new(1..4) |> cons(0)
+      #HalluxSeq<[0, 1, 2, 3, 4]>
+
+  Or they can be inserted at the right end using `Hallux.Seq.snoc/2`:
+
+      iex> new(1..4) |> snoc(0)
+      #HalluxSeq<[1, 2, 3, 4, 0]>
+
+  Accessing a single element is cheap:
+
+      iex> new(0..10) |> Enum.at(5)
+      5
   """
 
   alias Hallux.Internal.Elem
