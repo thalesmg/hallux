@@ -21,12 +21,16 @@ defmodule Hallux.Internal.Digit.Three do
     alias Hallux.Protocol.Monoid
     alias Hallux.Protocol.Reduce
 
-    def size(three) do
-      Reduce.reducel(three, Monoid.mempty(Measured.monoid_type(three)), fn i, acc ->
-        Monoid.mappend(i, Measured.size(acc))
-      end)
+    def size(%Three{a: a, b: b, c: c}) do
+      Monoid.mappend(
+        Measured.size(a),
+        Monoid.mappend(
+          Measured.size(b),
+          Measured.size(c)
+        )
+      )
     end
 
-    def monoid_type(_), do: []
+    def monoid_type(%Three{a: a}), do: Measured.monoid_type(a)
   end
 end

@@ -21,12 +21,19 @@ defmodule Hallux.Internal.Digit.Four do
     alias Hallux.Protocol.Monoid
     alias Hallux.Protocol.Reduce
 
-    def size(four) do
-      Reduce.reducel(four, Monoid.mempty(Measured.monoid_type(four)), fn i, acc ->
-        Monoid.mappend(i, Measured.size(acc))
-      end)
+    def size(%Four{a: a, b: b, c: c, d: d}) do
+      Monoid.mappend(
+        Measured.size(a),
+        Monoid.mappend(
+          Measured.size(b),
+          Monoid.mappend(
+            Measured.size(c),
+            Measured.size(d)
+          )
+        )
+      )
     end
 
-    def monoid_type(_), do: []
+    def monoid_type(%Four{a: a}), do: Measured.monoid_type(a)
   end
 end
