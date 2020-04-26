@@ -87,6 +87,9 @@ defmodule Hallux.Seq do
 
       iex> size(new(1..3))
       3
+
+      iex> size(new())
+      0
   """
   @spec size(t) :: non_neg_integer
   def size(%__MODULE__{t: t}) do

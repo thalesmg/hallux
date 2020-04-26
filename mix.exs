@@ -24,7 +24,8 @@ defmodule Hallux.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ex_doc, ">= 0.0.0", only: :dev}
+      {:ex_doc, ">= 0.0.0", only: :dev},
+      {:stream_data, "~> 0.4", only: :test}
     ]
   end
 
