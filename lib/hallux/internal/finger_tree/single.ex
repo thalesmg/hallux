@@ -14,6 +14,6 @@ defmodule Hallux.Internal.FingerTree.Single do
 
     def size(%Single{x: x}), do: Measured.size(x)
 
-    def monoid_type(%Single{monoid: m}), do: struct(m)
+    def monoid_type(%Single{monoid: m}), do: m
   end
 end

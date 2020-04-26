@@ -7,9 +7,11 @@ defmodule Hallux.SeqTest do
   doctest Seq, import: true
 
   property "concat . splitAt = id" do
-    check all s <- seq(),
-              n = Seq.size(s),
-              i <- member_of(0..n) do
+    check all(
+            s <- seq(),
+            n = Seq.size(s),
+            i <- member_of(0..n)
+          ) do
       {l, r} = Seq.split_at(s, i)
       assert_equal(Seq.concat(l, r), s)
     end
@@ -20,7 +22,7 @@ defmodule Hallux.SeqTest do
   end
 
   defp seq(generator \\ term()) do
-    gen all xs <- list_of(generator) do
+    gen all(xs <- list_of(generator)) do
       Seq.new(xs)
     end
   end
