@@ -43,6 +43,6 @@ defmodule Hallux.Internal.FingerTree.Deep do
 
     def size(%Deep{size: size}), do: size
 
-    def monoid_type(%Deep{monoid: m}), do: struct(m)
+    def monoid_type(%Deep{monoid: m}), do: m
   end
 end

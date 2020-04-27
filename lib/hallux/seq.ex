@@ -34,6 +34,7 @@ defmodule Hallux.Seq do
   alias Hallux.Internal.FingerTree
   alias Hallux.Internal.FingerTree.Empty
   alias Hallux.Protocol.Measured
+  alias Hallux.Protocol.Monoid
   alias Hallux.Protocol.Reduce
   alias Hallux.Internal.Size
 
@@ -50,7 +51,7 @@ defmodule Hallux.Seq do
       #HalluxSeq<[]>
   """
   @spec new() :: t
-  def new(), do: %__MODULE__{t: %Empty{monoid: Size}}
+  def new(), do: %__MODULE__{t: %Empty{monoid: Monoid.mempty(%Size{})}}
 
   @doc """
   `(O(n))`. Creates a Seq from an enumerable.

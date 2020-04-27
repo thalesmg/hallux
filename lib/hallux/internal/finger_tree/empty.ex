@@ -12,8 +12,8 @@ defmodule Hallux.Internal.FingerTree.Empty do
     alias Hallux.Internal.FingerTree.Empty
     alias Hallux.Protocol.Monoid
 
-    def size(%Empty{monoid: m}), do: Monoid.mempty(struct(m))
+    def size(%Empty{monoid: m}), do: Monoid.mempty(m)
 
-    def monoid_type(%Empty{monoid: m}), do: struct(m)
+    def monoid_type(%Empty{monoid: m}), do: m
   end
 end

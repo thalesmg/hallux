@@ -15,9 +15,9 @@ defmodule Hallux.Internal.FingerTree do
 
   @type value :: term
   @type t(value) ::
-          %Empty{monoid: module()}
-          | %Single{monoid: module(), x: value}
-          | %Deep{monoid: module(), l: Digit.t(value), m: t(Node.t(value)), r: Digit.t(value)}
+          %Empty{monoid: Monoid.t()}
+          | %Single{monoid: Monoid.t(), x: value}
+          | %Deep{monoid: Monoid.t(), l: Digit.t(value), m: t(Node.t(value)), r: Digit.t(value)}
   @type t :: t(term)
 
   def cons(%Empty{monoid: m}, x),
