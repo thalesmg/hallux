@@ -26,19 +26,15 @@ defmodule Hallux.IntervalMap do
   def insert(im = %__MODULE__{}, {low, high}, _payload) when low > high, do: im
   def insert(%__MODULE__{t: t}, {low, high}, payload) do
     {l, r} = FingerTree.split(t, fn %IntInterval{i: k} ->
-      larger? = k >= {low, high}
-      IO.inspect(binding(), label: :larger)
       k >= {low, high}
     end)
-
-    IO.inspect({l, r}, label: :lr)
 
     %__MODULE__{t:
                 FingerTree.concat(
                   l,
                   FingerTree.cons(r,
                     %Interval{low: low, high: high, payload: payload}
-                  ) |> IO.inspect(label: "Node i x <| r")
+                  )
                 )
     }
   end
@@ -56,21 +52,13 @@ defmodule Hallux.IntervalMap do
 
   def interval_match(%__MODULE__{t: t}, {low_i, high_i}) do
     t
-    |> FingerTree.take_until(fn x ->
-      greater? = greater(high_i, x)
-      IO.inspect(binding() |> Keyword.take([:x, :high_i, :greater?, :low_i]))
-      greater?
-    end)
+    |> FingerTree.take_until(&greater(high_i, &1))
     |> matches(low_i)
   end
 
   defp matches(xs, low_i) do
     xs
-    |> FingerTree.drop_until(fn x ->
-      atleast? = at_least(low_i, x)
-      IO.inspect(binding() |> Keyword.take([:x, :high_i, :atleast?, :low_i]))
-      atleast?
-    end)
+    |> FingerTree.drop_until(& at_least(low_i, &1))
     |> FingerTree.view_l()
     |> case do
          nil ->
