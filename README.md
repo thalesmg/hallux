@@ -58,7 +58,7 @@ Add `hallux` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:hallux, "~> 1.0.0"}
+    {:hallux, "~> 1.1.0"}
   ]
 end
 ```
