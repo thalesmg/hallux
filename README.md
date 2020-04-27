@@ -1,10 +1,23 @@
-# Hallux ![build status](https://travis-ci.org/thalesmg/hallux.svg?branch=master)
+# Hallux
+
+![build status](https://travis-ci.org/thalesmg/hallux.svg?branch=master)
+[![Hex.pm](https://img.shields.io/hexpm/v/hallux.svg)](http://hex.pm/packages/hallux)
+[![Hex.pm](https://img.shields.io/hexpm/dt/hallux.svg)](https://hex.pm/packages/hallux)
+[![Hex.pm](https://img.shields.io/hexpm/dw/hallux.svg)](https://hex.pm/packages/hallux)
 
 A [Finger Tree](http://www.staff.city.ac.uk/~ross/papers/FingerTree.html) implemenation for Elixir.
 
-Currently, only a random access structure (`Hallux.Seq`) is available for use. It allows appending to the front and to the back efficiently.
+Currently, a random access structure
+([`Hallux.Seq`](https://hexdocs.pm/hallux/Hallux.Seq.html)) and an interval map
+([`Hallux.IntervalMap`](https://hexdocs.pm/hallux/Hallux.IntervalMap.html)) is available for
+use.
 
-## Examples
+## `Hallux.Seq`
+
+Supports efficient insertion from both left and right ends and random
+access.
+
+### Examples
 
 ```elixir
 iex> Hallux.Seq.new
@@ -21,6 +34,23 @@ iex> Enum.at(seq, 0)
 1
 ```
 
+## `Hallux.IntervalMap`
+
+A map of closed intervals can be used to find an interval that
+overlaps with a given interval in O(log(n)), and all m of them in
+O(m log(n/m)) time.
+
+### Examples
+
+```elixir
+iex(1)> im = Enum.into([{{1, 2}, :a}, {{4, 10}, :b}, {{9, 15}, :c}], Hallux.IntervalMap.new())
+#HalluxIMap<[{{1, 2}, :a}, {{4, 10}, :b}, {{9, 15}, :c}]>
+iex(2)> Hallux.IntervalMap.interval_
+interval_match/2     interval_search/2
+iex(2)> Hallux.IntervalMap.interval_match(im, {8, 9})
+[{{4, 10}, :b}, {{9, 15}, :c}]
+```
+
 ## Installation
 
 Add `hallux` to your list of dependencies in `mix.exs`:
@@ -28,7 +58,7 @@ Add `hallux` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:hallux, "~> 1.0.0"}
+    {:hallux, "~> 1.1.0"}
   ]
 end
 ```
