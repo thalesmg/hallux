@@ -3,8 +3,8 @@
 A [Finger Tree](http://www.staff.city.ac.uk/~ross/papers/FingerTree.html) implemenation for Elixir.
 
 Currently, a random access structure
-([`Hallux.Seq`](lib/hallux/seq.ex)) and an interval map
-([`Hallux.IntervalMap`](lib/hallux/interval_map.ex)) is available for
+([`Hallux.Seq`](https://hexdocs.pm/hallux/Hallux.Seq.html)) and an interval map
+([`Hallux.IntervalMap`](https://hexdocs.pm/hallux/Hallux.IntervalMap.html)) is available for
 use.
 
 ## `Hallux.Seq`

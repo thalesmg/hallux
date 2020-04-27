@@ -1,7 +1,7 @@
 defmodule Hallux.Mixfile do
   use Mix.Project
 
-  @version "1.0.0"
+  @version "1.1.0"
 
   def project do
     [
@@ -48,7 +48,47 @@ defmodule Hallux.Mixfile do
     [
       main: "readme",
       source_ref: "v#{@version}",
-      extras: ["README.md"]
+      extras: ["README.md"],
+      groups_for_modules: [
+        "Data Structures": [
+          Hallux.IntervalMap,
+          Hallux.Seq,
+        ],
+        Protocols: [
+          Hallux.Protocol.Measured,
+          Hallux.Protocol.Monoid,
+          Hallux.Protocol.Reduce
+        ],
+        Internal: [
+          Hallux.Internal.Digit,
+          Hallux.Internal.Digit.One,
+          Hallux.Internal.Digit.Two,
+          Hallux.Internal.Digit.Three,
+          Hallux.Internal.Digit.Four,
+          Hallux.Internal.Elem,
+          Hallux.Internal.FingerTree,
+          Hallux.Internal.FingerTree.Empty,
+          Hallux.Internal.FingerTree.Single,
+          Hallux.Internal.FingerTree.Deep,
+          Hallux.Internal.Interval,
+          Hallux.Internal.IntInterval,
+          Hallux.Internal.IntInterval.IntInterval,
+          Hallux.Internal.IntInterval.NoInterval,
+          Hallux.Internal.Node,
+          Hallux.Internal.Node.Node2,
+          Hallux.Internal.Node.Node3,
+          Hallux.Internal.Size,
+          Hallux.Internal.Split
+        ]
+      ],
+      nest_modules_by_prefix: [
+        Hallux.Internal,
+        Hallux.Internal.Digit,
+        Hallux.Internal.FingerTree,
+        Hallux.Internal.IntInterval,
+        Hallux.Internal.Node,
+        Hallux.Protocol
+      ]
     ]
   end
 end
