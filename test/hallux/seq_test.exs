@@ -2,7 +2,10 @@ defmodule Hallux.SeqTest do
   use ExUnit.Case
   use ExUnitProperties
 
+  alias Hallux.Protocol.Valid
   alias Hallux.Seq
+
+  import Hallux.Test.Generators
 
   doctest Seq, import: true
 
@@ -17,13 +20,29 @@ defmodule Hallux.SeqTest do
     end
   end
 
-  defp assert_equal(s1 = %Seq{}, s2 = %Seq{}) do
-    assert Enum.to_list(s1) == Enum.to_list(s2)
+  describe "valid" do
+    property "generator" do
+      check all(s <- seq()) do
+        assert Valid.valid?(s)
+      end
+    end
+
+    property "cons" do
+      check all(xs <- list_of(term())) do
+        seq = Enum.reduce(xs, Seq.new(), &Seq.cons(&2, &1))
+        assert Valid.valid?(seq)
+      end
+    end
+
+    property "snoc" do
+      check all(xs <- list_of(term())) do
+        seq = Enum.reduce(xs, Seq.new(), &Seq.snoc(&2, &1))
+        assert Valid.valid?(seq)
+      end
+    end
   end
 
-  defp seq(generator \\ term()) do
-    gen all(xs <- list_of(generator)) do
-      Seq.new(xs)
-    end
+  defp assert_equal(s1 = %Seq{}, s2 = %Seq{}) do
+    assert Enum.to_list(s1) == Enum.to_list(s2)
   end
 end

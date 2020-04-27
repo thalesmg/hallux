@@ -4,14 +4,6 @@ defmodule Hallux.IntervalMap do
   alias Hallux.Internal.FingerTree
   alias Hallux.Internal.FingerTree.Empty
   alias Hallux.Internal.Interval
-  alias Hallux.Internal.Key, as: KeyBase
-  alias Hallux.Internal.Key.Key
-  alias Hallux.Internal.Key.NoKey
-  alias Hallux.Internal.MTuple
-  alias Hallux.Internal.Prio, as: PrioBase
-  alias Hallux.Internal.Prio.MInfty
-  alias Hallux.Internal.Prio.Prio
-  alias Hallux.Internal.IntInterval, as: IntIntervalBase
   alias Hallux.Internal.IntInterval.IntInterval
   alias Hallux.Internal.IntInterval.NoInterval
   alias Hallux.Internal.Split
@@ -20,22 +12,25 @@ defmodule Hallux.IntervalMap do
 
   def new(),
     do: %__MODULE__{t: %Empty{monoid: %NoInterval{}}}
-    # do: %__MODULE__{t: %Empty{monoid: %MTuple{a: %NoKey{}, b: %MInfty{}}}}
 
   def insert(interval_map, interval, payload \\ nil)
   def insert(im = %__MODULE__{}, {low, high}, _payload) when low > high, do: im
-  def insert(%__MODULE__{t: t}, {low, high}, payload) do
-    {l, r} = FingerTree.split(t, fn %IntInterval{i: k} ->
-      k >= {low, high}
-    end)
 
-    %__MODULE__{t:
-                FingerTree.concat(
-                  l,
-                  FingerTree.cons(r,
-                    %Interval{low: low, high: high, payload: payload}
-                  )
-                )
+  def insert(%__MODULE__{t: t}, {low, high}, payload) do
+    {l, r} =
+      FingerTree.split(t, fn %IntInterval{i: k} ->
+        k >= {low, high}
+      end)
+
+    %__MODULE__{
+      t:
+        FingerTree.concat(
+          l,
+          FingerTree.cons(
+            r,
+            %Interval{low: low, high: high, payload: payload}
+          )
+        )
     }
   end
 
@@ -58,27 +53,20 @@ defmodule Hallux.IntervalMap do
 
   defp matches(xs, low_i) do
     xs
-    |> FingerTree.drop_until(& at_least(low_i, &1))
+    |> FingerTree.drop_until(&at_least(low_i, &1))
     |> FingerTree.view_l()
     |> case do
-         nil ->
-           []
-         {%Interval{low: low, high: high, payload: payload}, xs_} ->
-           [{{low, high}, payload} | matches(xs_, low_i)]
+      nil ->
+        []
+
+      {%Interval{low: low, high: high, payload: payload}, xs_} ->
+        [{{low, high}, payload} | matches(xs_, low_i)]
     end
   end
-
-  # def at_least(k, %MTuple{b: prio}) do
-  #   PrioBase.compare(%Prio{p: k}, prio) != :gt
-  # end
 
   def at_least(k, %IntInterval{v: hi}) do
     k <= hi
   end
-
-  # def greater(k, %MTuple{a: key}) do
-  #   KeyBase.compare(key, %Key{k: k}) == :gt
-  # end
 
   def greater(k, %IntInterval{i: {low, _}}) do
     low > k

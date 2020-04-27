@@ -13,6 +13,7 @@ defmodule Hallux.Mixfile do
       source_url: "https://github.com/thalesmg/hallux",
       homepage_url: "https://github.com/thalesmg/hallux",
       elixir: "~> 1.5",
+      elixirc_paths: elixirc_paths(Mix.env()),
       deps: deps(),
       docs: docs()
     ]
@@ -39,6 +40,9 @@ defmodule Hallux.Mixfile do
       links: %{github: "https://github.com/thalesmg/hallux"}
     ]
   end
+
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_), do: ["lib"]
 
   defp docs() do
     [
