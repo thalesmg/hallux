@@ -1,4 +1,9 @@
-# Hallux ![build status](https://travis-ci.org/thalesmg/hallux.svg?branch=master)
+# Hallux
+
+![build status](https://travis-ci.org/thalesmg/hallux.svg?branch=master)
+[![Hex.pm](https://img.shields.io/hexpm/v/hallux.svg)](http://hex.pm/packages/hallux)
+[![Hex.pm](https://img.shields.io/hexpm/dt/hallux.svg)](https://hex.pm/packages/hallux)
+[![Hex.pm](https://img.shields.io/hexpm/dw/hallux.svg)](https://hex.pm/packages/hallux)
 
 A [Finger Tree](http://www.staff.city.ac.uk/~ross/papers/FingerTree.html) implemenation for Elixir.
 
