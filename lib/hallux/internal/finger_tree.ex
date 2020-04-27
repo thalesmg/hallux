@@ -126,7 +126,7 @@ defmodule Hallux.Internal.FingerTree do
       ),
       do: %Deep{
         monoid: mo,
-        size: Monoid.mappend(Measured.size(e), s),
+        size: Monoid.mappend(s, Measured.size(e)),
         l: pr,
         m: snoc(m, node3(a, b, c)),
         r: %Two{a: d, b: e}
@@ -144,7 +144,7 @@ defmodule Hallux.Internal.FingerTree do
       ),
       do: %Deep{
         monoid: mo,
-        size: Monoid.mappend(Measured.size(d), s),
+        size: Monoid.mappend(s, Measured.size(d)),
         l: pr,
         m: m,
         r: %Four{a: a, b: b, c: c, d: d}
@@ -162,7 +162,7 @@ defmodule Hallux.Internal.FingerTree do
       ),
       do: %Deep{
         monoid: mo,
-        size: Monoid.mappend(Measured.size(c), s),
+        size: Monoid.mappend(s, Measured.size(c)),
         l: pr,
         m: m,
         r: %Three{a: a, b: b, c: c}
@@ -180,7 +180,7 @@ defmodule Hallux.Internal.FingerTree do
       ),
       do: %Deep{
         monoid: mo,
-        size: Monoid.mappend(Measured.size(b), s),
+        size: Monoid.mappend(s, Measured.size(b)),
         l: pr,
         m: m,
         r: %Two{a: a, b: b}
@@ -224,14 +224,18 @@ defmodule Hallux.Internal.FingerTree do
   def split_tree(_p, _i, %Empty{}), do: raise("split_tree called with Empty")
 
   def split_tree(_p, _i, %Single{monoid: mo, x: x}) do
+    IO.inspect("split_tree single")
     empty = %Empty{monoid: mo}
     %Split{l: empty, x: x, r: empty}
   end
 
   def split_tree(p, i, %Deep{monoid: mo, l: pr, m: m, r: sf}) do
+    IO.inspect("split_tree deep")
     vpr = Monoid.mappend(i, Measured.size(pr))
     vm = Monoid.mappend(vpr, Measured.size(m))
     empty = %Empty{monoid: mo}
+
+    IO.inspect({i, pr, m, vpr, vm, Measured.size(pr), Measured.size(m), p.(vpr), p.(vm)})
 
     cond do
       p.(vpr) ->
@@ -244,7 +248,7 @@ defmodule Hallux.Internal.FingerTree do
         %Split{l: deep_r(pr, ml, l), x: x, r: deep_l(r, mr, sf)}
 
       :otherwise ->
-        %Split{l: l, x: x, r: r} = split_digit(p, vm, sf)
+        %Split{l: l, x: x, r: r} = split_digit(p, vm, sf) |> IO.inspect(label: :split_digit_sf)
         %Split{l: deep_r(pr, m, l), x: x, r: maybe(empty, &digit_to_tree(mo, &1), r)}
     end
   end
