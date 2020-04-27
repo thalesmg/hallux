@@ -10,6 +10,19 @@ defmodule Hallux.IntervalMap do
   alias Hallux.Protocol.Measured
   alias Hallux.Protocol.Monoid
 
+  @type value :: term
+  @opaque t(value) :: %__MODULE__{t: FingerTree.t(Interval.t(value))}
+  @type t :: t(term)
+
+  @doc """
+  `(O(1))`. Returns a new IntervalMap.
+
+  ## Examples
+
+      iex> new()
+      #HalluxIMap<[]>
+  """
+  @spec new() :: t
   def new(),
     do: %__MODULE__{t: %Empty{monoid: %NoInterval{}}}
 
@@ -64,11 +77,56 @@ defmodule Hallux.IntervalMap do
     end
   end
 
-  def at_least(k, %IntInterval{v: hi}) do
+  defp at_least(k, %IntInterval{v: hi}) do
     k <= hi
   end
 
-  def greater(k, %IntInterval{i: {low, _}}) do
+  defp greater(k, %IntInterval{i: {low, _}}) do
     low > k
+  end
+
+  defimpl Enumerable do
+    alias Hallux.IntervalMap
+    alias Hallux.Internal.Interval
+    alias Hallux.Internal.IntInterval.IntInterval
+    alias Hallux.Protocol.Measured
+
+    def count(%IntervalMap{t: t}), do: {:ok, Measured.size(t)}
+    def member?(_, _), do: {:error, __MODULE__}
+
+    def slice(im = %IntervalMap{t: t}) do
+      %IntInterval{v: hi} = Measured.size(t)
+
+      slicing_fun = fn start, len ->
+        IntervalMap.interval_match(im, {start, start + len})
+      end
+
+      {:ok, hi, slicing_fun}
+    end
+
+    def reduce(_im, {:halt, acc}, _fun), do: {:halted, acc}
+    def reduce(im, {:suspend, acc}, fun), do: {:suspended, acc, &reduce(im, &1, fun)}
+    def reduce(%IntervalMap{t: t}, {:cont, acc}, fun) do
+      case FingerTree.view_l(t) do
+        nil ->
+          {:done, acc}
+        {%Interval{low: lo, high: hi, payload: payload}, rest} ->
+          reduce(%IntervalMap{t: rest}, fun.({{lo, hi}, payload}, acc), fun)
+      end
+    end
+  end
+
+  defimpl Inspect do
+    import Inspect.Algebra
+
+    def inspect(im, opts) do
+      opts = %Inspect.Opts{opts | charlists: :as_lists}
+
+      concat([
+        "#HalluxIMap<",
+        Inspect.List.inspect(Enum.to_list(im), opts),
+        ">"
+      ])
+    end
   end
 end

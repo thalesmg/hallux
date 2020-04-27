@@ -1,6 +1,10 @@
 defmodule Hallux.Internal.Interval do
   defstruct [:low, :high, :payload]
 
+  @type value :: term
+  @opaque t(value) :: %__MODULE__{low: integer(), high: integer(), payload: value}
+  @type t :: t(term)
+
   defimpl Hallux.Protocol.Measured do
     alias Hallux.Internal.Interval
     alias Hallux.Internal.IntInterval.IntInterval

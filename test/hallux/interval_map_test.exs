@@ -7,6 +7,8 @@ defmodule Hallux.IntervalMapTest do
 
   import Hallux.Test.Generators
 
+  doctest IntervalMap, import: true
+
   describe "valid" do
     property "generator" do
       check all(im <- interval_map()) do
