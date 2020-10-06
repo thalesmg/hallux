@@ -27,7 +27,7 @@ defmodule Hallux.IntervalMap do
   alias Hallux.Protocol.Monoid
 
   @type value :: term
-  @opaque t(value) :: %__MODULE__{t: FingerTree.t(Interval.t(value))}
+  @type t(value) :: %__MODULE__{t: FingerTree.t(Interval.t(value))}
   @type t :: t(term)
 
   @doc """
@@ -102,7 +102,9 @@ defmodule Hallux.IntervalMap do
       iex> interval_search(im, {20, 30})
       {:error, :not_found}
   """
-  @spec interval_search(t(val), {integer(), integer()}) :: {:ok, {integer(), integer()}, val} | {:error, :not_found} when val: value
+  @spec interval_search(t(val), {integer(), integer()}) ::
+          {:ok, {integer(), integer()}, val} | {:error, :not_found}
+        when val: value
   def interval_search(%__MODULE__{t: t = %_{monoid: mo}}, {low_i, high_i}) do
     %Split{x: %Interval{low: low_x, high: high_x, payload: payload}} =
       FingerTree.split_tree(&at_least(low_i, &1), Monoid.mempty(mo), t)
@@ -139,7 +141,8 @@ defmodule Hallux.IntervalMap do
       iex> interval_match(im, {16, 20})
       []
   """
-  @spec interval_match(t(val), {integer(), integer()}) :: [{{integer(), integer()}, val}] when val: value
+  @spec interval_match(t(val), {integer(), integer()}) :: [{{integer(), integer()}, val}]
+        when val: value
   def interval_match(%__MODULE__{t: t}, {low_i, high_i}) do
     t
     |> FingerTree.take_until(&greater(high_i, &1))
@@ -188,10 +191,12 @@ defmodule Hallux.IntervalMap do
 
     def reduce(_im, {:halt, acc}, _fun), do: {:halted, acc}
     def reduce(im, {:suspend, acc}, fun), do: {:suspended, acc, &reduce(im, &1, fun)}
+
     def reduce(%IntervalMap{t: t}, {:cont, acc}, fun) do
       case FingerTree.view_l(t) do
         nil ->
           {:done, acc}
+
         {%Interval{low: lo, high: hi, payload: payload}, rest} ->
           reduce(%IntervalMap{t: rest}, fun.({{lo, hi}, payload}, acc), fun)
       end
@@ -205,10 +210,13 @@ defmodule Hallux.IntervalMap do
       collector_fn = fn
         im, {:cont, {{lo, hi}, payload}} ->
           IntervalMap.insert(im, {lo, hi}, payload)
+
         im, {:cont, {lo, hi}} ->
           IntervalMap.insert(im, {lo, hi})
+
         im, :done ->
           im
+
         _im, :halt ->
           :ok
       end

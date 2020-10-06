@@ -1,11 +1,12 @@
 defprotocol Hallux.Protocol.Reduce do
   @type a :: term
   @type b :: term
+  @type t :: term
 
-  @spec reducer(Reduce.t(), (a, b -> b), b) :: b
+  @spec reducer(t(), b, (a, b -> b)) :: b
   def reducer(fa, b, rfn)
 
-  @spec reducel(Reduce.t(), (a, b -> b), b) :: b
+  @spec reducel(t(), b, (a, b -> b)) :: b
   def reducel(fa, b, lfn)
 end
 

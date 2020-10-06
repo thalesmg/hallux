@@ -4,6 +4,6 @@ defprotocol Hallux.Protocol.Measured do
   @spec size(m :: term) :: Monoid.t()
   def size(m)
 
-  @spec monoid_type(m :: term) :: atom
+  @spec monoid_type(m :: term) :: Monoid.t()
   def monoid_type(m)
 end
