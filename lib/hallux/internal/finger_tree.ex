@@ -4,6 +4,7 @@ defmodule Hallux.Internal.FingerTree do
   alias Hallux.Internal.Digit.Two
   alias Hallux.Internal.Digit.Three
   alias Hallux.Internal.Digit.Four
+  alias Hallux.Internal.Node
   alias Hallux.Internal.Node.Node2
   alias Hallux.Internal.Node.Node3
   alias Hallux.Internal.FingerTree.Empty
@@ -14,11 +15,19 @@ defmodule Hallux.Internal.FingerTree do
   alias Hallux.Protocol.Monoid
 
   @type value :: term
-  @type t(value) ::
-          %Empty{monoid: Monoid.t()}
-          | %Single{monoid: Monoid.t(), x: value}
-          | %Deep{monoid: Monoid.t(), l: Digit.t(value), m: t(Node.t(value)), r: Digit.t(value)}
+  @type t(monoid, value) ::
+          %Empty{monoid: monoid}
+          | %Single{monoid: monoid, x: value}
+          | %Deep{
+              monoid: monoid,
+              l: Digit.t(value),
+              m: t(monoid, Node.t(value)),
+              r: Digit.t(value)
+            }
+  @type t(value) :: t(Monoid.m(), value)
   @type t :: t(term)
+
+  @dialyzer {:no_match, rhead_digit: 1}
 
   def cons(%Empty{monoid: m}, x),
     do: %Single{monoid: m, x: x}

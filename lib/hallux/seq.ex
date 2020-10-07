@@ -39,7 +39,7 @@ defmodule Hallux.Seq do
   alias Hallux.Internal.Size
 
   @type value :: term
-  @opaque t(value) :: %__MODULE__{t: FingerTree.t(Elem, value)}
+  @type t(value) :: %__MODULE__{t: FingerTree.t(Elem, value)}
   @type t :: t(term)
 
   @doc """
@@ -288,7 +288,7 @@ defmodule Hallux.Seq do
       #HalluxSeq<[6, 7, 8]>
 
   """
-  @spec split_at(t(val1), t(val2)) :: t(val1 | val2) when val1: value, val2: value
+  @spec split_at(t(val), integer()) :: {t(val), t(val)} when val: value
   def split_at(%__MODULE__{t: t}, i) when is_integer(i) do
     p = fn %Size{s: s} -> s > i end
     {l, r} = FingerTree.split(t, p)

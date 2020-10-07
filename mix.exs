@@ -14,6 +14,9 @@ defmodule Hallux.Mixfile do
       homepage_url: "https://github.com/thalesmg/hallux",
       elixir: "~> 1.5",
       elixirc_paths: elixirc_paths(Mix.env()),
+      dialyzer: [
+        plt_core_path: "priv/plts"
+      ],
       deps: deps(),
       docs: docs()
     ]
@@ -28,6 +31,7 @@ defmodule Hallux.Mixfile do
   defp deps do
     [
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
+      {:dialyxir, "~> 1.0", only: :dev, runtime: false},
       {:stream_data, "~> 0.4", only: :test}
     ]
   end
@@ -52,7 +56,7 @@ defmodule Hallux.Mixfile do
       groups_for_modules: [
         "Data Structures": [
           Hallux.IntervalMap,
-          Hallux.Seq,
+          Hallux.Seq
         ],
         Protocols: [
           Hallux.Protocol.Measured,
