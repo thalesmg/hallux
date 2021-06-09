@@ -219,7 +219,7 @@ defmodule Hallux.Seq do
       iex> rest
       #HalluxSeq<[1, 2, 3, 4, 5, 6, 7, 8, 9]>
   """
-  @spec view_r(t(val)) :: nil | {val, t(val)} when val: value
+  @spec view_r(t(val)) :: nil | {t(val), val} when val: value
   def view_r(%__MODULE__{t: t}) do
     with {rest, %Elem{e: x}} <- FingerTree.view_r(t) do
       {%__MODULE__{t: rest}, x}
