@@ -56,6 +56,7 @@ matrix:
       otp_release: 20.3.8.22
 
 script:
+  - mix format --check-formatted
   - mix test
   - if [ "$SKIP_DIALYZER" != "true" ]; then mix dialyzer; fi
 
