@@ -9,7 +9,7 @@ defmodule Hallux.Internal.FingerTree.Deep do
       Reduce.reducer(
         pr,
         Reduce.reducer(
-          m,
+          m.(),
           Reduce.reducer(
             sf,
             acc,
@@ -25,7 +25,7 @@ defmodule Hallux.Internal.FingerTree.Deep do
       Reduce.reducel(
         sf,
         Reduce.reducel(
-          m,
+          m.(),
           Reduce.reducel(
             pr,
             acc,

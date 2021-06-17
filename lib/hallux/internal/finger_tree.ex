@@ -21,7 +21,7 @@ defmodule Hallux.Internal.FingerTree do
           | %Deep{
               monoid: monoid,
               l: Digit.t(value),
-              m: t(monoid, Node.t(value)),
+              m: (-> t(monoid, Node.t(value))),
               r: Digit.t(value)
             }
   @type t(value) :: t(Monoid.m(), value)
@@ -54,7 +54,7 @@ defmodule Hallux.Internal.FingerTree do
         monoid: mo,
         size: Monoid.mappend(Measured.size(a), s),
         l: %Two{a: a, b: b},
-        m: cons(m, node3(c, d, e)),
+        m: fn -> cons(m.(), node3(c, d, e)) end,
         r: sf
       }
 
@@ -137,7 +137,7 @@ defmodule Hallux.Internal.FingerTree do
         monoid: mo,
         size: Monoid.mappend(s, Measured.size(e)),
         l: pr,
-        m: snoc(m, node3(a, b, c)),
+        m: fn -> snoc(m.(), node3(a, b, c)) end,
         r: %Two{a: d, b: e}
       }
 
@@ -212,23 +212,26 @@ defmodule Hallux.Internal.FingerTree do
   def take_until(t, p), do: split(t, p) |> elem(0)
   def drop_until(t, p), do: split(t, p) |> elem(1)
 
+  # For the view functions, it is often necessary to evaluate
+  # the :m field one level to get the cached monoid value in there.
+
   def view_l(%Empty{}), do: nil
   def view_l(%Single{monoid: mo, x: x}), do: {x, %Empty{monoid: mo}}
 
   def view_l(%Deep{l: %One{a: x}, m: m, r: sf}),
-    do: {x, rot_l(m, sf)}
+    do: {x, rot_l(m.(), sf)}
 
   def view_l(%Deep{l: pr, m: m, r: sf}),
-    do: {lhead_digit(pr), deep(ltail_digit(pr), m, sf)}
+    do: {lhead_digit(pr), deep(ltail_digit(pr), m.(), sf)}
 
   def view_r(%Empty{}), do: nil
   def view_r(%Single{monoid: mo, x: x}), do: {%Empty{monoid: mo}, x}
 
   def view_r(%Deep{l: pr, m: m, r: %One{a: x}}),
-    do: {rot_r(pr, m), x}
+    do: {rot_r(pr, m.()), x}
 
   def view_r(%Deep{l: pr, m: m, r: sf}),
-    do: {deep(pr, m, rtail_digit(sf)), rhead_digit(sf)}
+    do: {deep(pr, m.(), rtail_digit(sf)), rhead_digit(sf)}
 
   def split_tree(_p, _i, %Empty{}), do: raise("split_tree called with Empty")
 
@@ -238,6 +241,7 @@ defmodule Hallux.Internal.FingerTree do
   end
 
   def split_tree(p, i, %Deep{monoid: mo, l: pr, m: m, r: sf}) do
+    m = m.()
     vpr = Monoid.mappend(i, Measured.size(pr))
     vm = Monoid.mappend(vpr, Measured.size(m))
     empty = %Empty{monoid: mo}
@@ -270,7 +274,7 @@ defmodule Hallux.Internal.FingerTree do
           )
         ),
       l: d1,
-      m: t,
+      m: fn -> t end,
       r: d2
     }
   end
@@ -328,7 +332,7 @@ defmodule Hallux.Internal.FingerTree do
          monoid: mo,
          size: Monoid.mappend(s1, s2),
          l: pr1,
-         m: add_digits0(m1, sf1, pr2, m2),
+         m: fn -> add_digits0(m1.(), sf1, pr2, m2.()) end,
          r: sf2
        }
 
@@ -424,7 +428,7 @@ defmodule Hallux.Internal.FingerTree do
              )
            ),
          l: pr1,
-         m: add_digits1(m1, sf1, a, pr2, m2),
+         m: fn -> add_digits1(m1.(), sf1, a, pr2, m2.()) end,
          r: sf2
        }
 
@@ -524,7 +528,7 @@ defmodule Hallux.Internal.FingerTree do
              )
            ),
          l: pr1,
-         m: add_digits2(m1, sf1, a, b, pr2, m2),
+         m: fn -> add_digits2(m1.(), sf1, a, b, pr2, m2.()) end,
          r: sf2
        }
 
@@ -628,7 +632,7 @@ defmodule Hallux.Internal.FingerTree do
              )
            ),
          l: pr1,
-         m: add_digits3(m1, sf1, a, b, c, pr2, m2),
+         m: fn -> add_digits3(m1.(), sf1, a, b, c, pr2, m2.()) end,
          r: sf2
        }
 
@@ -736,7 +740,7 @@ defmodule Hallux.Internal.FingerTree do
              )
            ),
          l: pr1,
-         m: add_digits4(m1, sf1, a, b, c, d, pr2, m2),
+         m: fn -> add_digits4(m1.(), sf1, a, b, c, d, pr2, m2.()) end,
          r: sf2
        }
 
@@ -895,7 +899,7 @@ defmodule Hallux.Internal.FingerTree do
               Measured.size(sf)
             ),
           l: node_to_digit(a),
-          m: m_,
+          m: fn -> m_ end,
           r: sf
         }
     end
@@ -915,7 +919,7 @@ defmodule Hallux.Internal.FingerTree do
               Measured.size(m)
             ),
           l: pr,
-          m: m_,
+          m: fn -> m_ end,
           r: node_to_digit(a)
         }
     end
