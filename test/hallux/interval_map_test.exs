@@ -34,14 +34,12 @@ defmodule Hallux.IntervalMapTest do
 
         for [x, y] <- xs do
           assert IntervalMap.interval_match(im, {x, y}) == [{{x, y}, nil}],
-                 "disjoint union should return only one interval. \n tree: #{
-                   inspect(im.t, pretty: true)
-                 }\n tuple: #{inspect({x, y})}"
+                 "disjoint union should return only one interval. \n" <>
+                   " tree: #{inspect(im.t, pretty: true)}\n tuple: #{inspect({x, y})}"
 
           assert IntervalMap.interval_search(im, {x, y}) == [{{x, y}, nil}],
-                 "disjoint union should return own interval. \n tree: #{
-                   inspect(im.t, pretty: true)
-                 }\n tuple: #{inspect({x, y})}"
+                 "disjoint union should return own interval. \n" <>
+                   " tree: #{inspect(im.t, pretty: true)}\n tuple: #{inspect({x, y})}"
         end
       end
     end
