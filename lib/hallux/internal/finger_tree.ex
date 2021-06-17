@@ -958,4 +958,40 @@ defmodule Hallux.Internal.FingerTree do
 
   defp maybe(default, _proj_fn, nil), do: default
   defp maybe(_default, proj_fn, m), do: proj_fn.(m)
+
+  defimpl Enumerable do
+    alias Hallux.Internal.FingerTree
+
+    def count(_), do: {:error, __MODULE__}
+
+    def member?(_, _), do: {:error, __MODULE__}
+
+    def slice(_), do: {:error, __MODULE__}
+
+    def reduce(_finger_tree, {:halt, acc}, _fun), do: {:halted, acc}
+    def reduce(finger_tree, {:suspend, acc}, fun), do: {:suspended, acc, &reduce(finger_tree, &1, fun)}
+
+    def reduce(finger_tree, {:cont, acc}, fun) do
+      case FingerTree.view_l(finger_tree) do
+        nil -> {:done, acc}
+        {x, rest} -> reduce(rest, fun.(x, acc), fun)
+      end
+    end
+
+  end
+
+  defimpl Collectable do
+    alias Hallux.Internal.FingerTree
+
+    def into(original) do
+      collector_fn = fn
+        finger_tree, {:cont, elem} -> FingerTree.snoc(finger_tree, elem)
+        finger_tree, :done -> finger_tree
+        _finger_tree, :halt -> :ok
+      end
+
+      {original, collector_fn}
+    end
+  end
+
 end
