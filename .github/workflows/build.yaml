@@ -1,0 +1,63 @@
+name: Build
+on:
+  pull_request:
+  push:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: OTP ${{matrix.otp}} / Elixir ${{matrix.elixir}}
+    strategy:
+      matrix:
+        otp: ['20.3', '22.3', '24.0']
+        elixir: ['1.6.5', '1.7.4', '1.8.2', '1.9.4', '1.10.4', '1.11.4', '1.12.1']
+        include:
+          - elixir: 1.6.5
+            otp: 20.3
+            skip_dialyzer: true
+          - elixir: 1.6.5
+            otp: 22.3
+            skip_dialyzer: true
+          - elixir: 1.7.4
+            otp: 21.3.8
+            skip_dialyzer: true
+          - elixir: 1.7.4
+            otp: 22.1.3
+            skip_dialyzer: true
+          - elixir: 1.7.4
+            otp: 23.0.4
+            skip_dialyzer: true
+        exclude:
+          - elixir: '1.6.5'
+            otp: '24.0'
+          - elixir: '1.7.4'
+            otp: '24.0'
+          - elixir: '1.8.2'
+            otp: '24.0'
+          - elixir: '1.9.4'
+            otp: '24.0'
+          - elixir: '1.10.4'
+            otp: '20.3'
+          - elixir: '1.11.4'
+            otp: '20.3'
+          - elixir: '1.12.1'
+            otp: '20.3'
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - uses: erlef/setup-beam@v1.7.2
+        with:
+          otp-version: ${{matrix.otp}}
+          elixir-version: ${{matrix.elixir}}
+      - name: Cache multiple paths
+        uses: actions/cache@v2
+        with:
+          path: |
+            priv/plts
+            deps
+          key: ${{ runner.os }}-${{ hashFiles('mix.lock') }}-${{ matrix.elixir }}-${{ matrix.otp }}
+      - run: mkdir -p priv/plts/
+      - run: mix deps.get
+      - run: mix format --check-formatted
+      - run: mix test
+      - run: if [ "$SKIP_DIALYZER" != "true" ]; then mix dialyzer; fi
+        env:
+          SKIP_DIALYZER: ${{ matrix.skip_dialyzer }}
