@@ -1,7 +1,7 @@
 defprotocol Hallux.Protocol.Valid do
   @fallback_to_any true
 
-  @spec valid?(term) :: bool
+  @spec valid?(term) :: boolean
   def valid?(x)
 end
 
