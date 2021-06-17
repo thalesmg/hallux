@@ -3,6 +3,7 @@ defmodule Hallux.Test.Generators do
 
   alias Hallux.IntervalMap
   alias Hallux.Seq
+  alias Hallux.OrderedMap
 
   def seq(generator \\ term()) do
     gen all(xs <- list_of(generator)) do
@@ -36,6 +37,12 @@ defmodule Hallux.Test.Generators do
       |> Enum.dedup()
       |> Stream.chunk_every(2, 2, :discard)
       |> Enum.map(fn [x, y] -> {x, y} end)
+    end
+  end
+
+  def ordered_map(key_gen \\ term(), value_gen \\ term()) do
+    gen all(key_value_pairs <- list_of(tuple({key_gen, value_gen}))) do
+      OrderedMap.new(key_value_pairs)
     end
   end
 end
