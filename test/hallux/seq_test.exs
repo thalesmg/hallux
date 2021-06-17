@@ -66,9 +66,9 @@ defmodule Hallux.SeqTest do
 
   property "concat . to_list = to_list . ++" do
     check all(
-      s1 <- seq(),
-      s2 <- seq()
-    ) do
+            s1 <- seq(),
+            s2 <- seq()
+          ) do
       assert Enum.to_list(Seq.concat(s1, s2)) == Enum.to_list(s1) ++ Enum.to_list(s2)
     end
   end
