@@ -977,7 +977,10 @@ defmodule Hallux.Internal.FingerTree do
         {x, rest} -> reduce(rest, fun.(x, acc), fun)
       end
     end
+  end
 
+  defmacro derive_enumerable(module, wrapper, unwrapper) do
+    ...
   end
 
   defimpl Collectable do
