@@ -14,6 +14,7 @@ defmodule Hallux.Mixfile do
       homepage_url: "https://github.com/thalesmg/hallux",
       elixir: "~> 1.5",
       elixirc_paths: elixirc_paths(Mix.env()),
+      test_paths: test_paths(Mix.env()),
       dialyzer: [
         plt_core_path: "priv/plts"
       ],
@@ -32,8 +33,9 @@ defmodule Hallux.Mixfile do
     [
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
       {:dialyxir, "~> 1.0", only: :dev, runtime: false},
-      {:stream_data, "~> 0.4", only: :test},
-      {:benchee, "~> 1.0", only: :dev}
+      {:stream_data, "~> 0.4", only: [:test, :test_dev]},
+      {:benchee, "~> 1.0", only: :dev},
+      {:credo, "~> 1.5.6", only: [:dev, :test_dev], runtime: false}
     ]
   end
 
@@ -47,7 +49,12 @@ defmodule Hallux.Mixfile do
   end
 
   defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(:test_dev), do: ["lib", "test/support", "dev"]
   defp elixirc_paths(_), do: ["lib"]
+
+  defp test_paths(:test), do: ["test"]
+  defp test_paths(:test_dev), do: ["test-dev"]
+  defp test_paths(_), do: []
 
   defp docs() do
     [
