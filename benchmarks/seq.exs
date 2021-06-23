@@ -40,7 +40,7 @@ inputs = %{
   "medium sequence snoc" => make_test_input_snoc.(10_000),
   "tiny sequence concat" => make_test_input_concat.(1),
   "small sequence concat" => make_test_input_concat.(100),
-  "medium sequence concat" => make_test_input_concat.(10_000),
+  "medium sequence concat" => make_test_input_concat.(10_000)
 }
 
 Benchee.run(
@@ -49,7 +49,7 @@ Benchee.run(
     "snoc" => fn seq -> Seq.snoc(seq, 0) end,
     "view_l" => fn seq -> Seq.view_l(seq) end,
     "view_r" => fn seq -> Seq.view_r(seq) end,
-    "concat" => fn seq -> Seq.concat(seq, seq) end,
+    "concat" => fn seq -> Seq.concat(seq, seq) end
   },
   inputs: inputs,
   unit_scaling: :none

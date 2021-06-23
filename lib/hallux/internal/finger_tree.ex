@@ -209,8 +209,8 @@ defmodule Hallux.Internal.FingerTree do
     end
   end
 
-  def take_until(t, p), do: split(t, p) |> elem(0)
-  def drop_until(t, p), do: split(t, p) |> elem(1)
+  def take_until(t, p), do: t |> split(p) |> elem(0)
+  def drop_until(t, p), do: t |> split(p) |> elem(1)
 
   def view_l(%Empty{}), do: nil
   def view_l(%Single{monoid: mo, x: x}), do: {x, %Empty{monoid: mo}}
