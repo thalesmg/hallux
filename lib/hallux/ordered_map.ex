@@ -191,8 +191,7 @@ defmodule Hallux.OrderedMap do
       [:a, :b, :b, :c]
   """
   def keys(ordered_map) do
-    ordered_map
-    |> Enum.map(fn {key, _value} -> key end)
+    Enum.map(ordered_map, fn {key, _value} -> key end)
   end
 
   @doc """
@@ -206,8 +205,7 @@ defmodule Hallux.OrderedMap do
       [1, 2, 4, 3]
   """
   def values(ordered_map) do
-    ordered_map
-    |> Enum.map(fn {_key, value} -> value end)
+    Enum.map(ordered_map, fn {_key, value} -> value end)
   end
 
   defimpl Enumerable do
