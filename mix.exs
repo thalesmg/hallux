@@ -1,7 +1,7 @@
 defmodule Hallux.Mixfile do
   use Mix.Project
 
-  @version "1.1.0"
+  @version "1.2.0"
 
   def project do
     [
@@ -31,7 +31,7 @@ defmodule Hallux.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ex_doc, "~> 0.21", only: :dev, runtime: false},
+      {:ex_doc, "~> 0.24", only: :dev, runtime: false},
       {:dialyxir, "~> 1.0", only: :dev, runtime: false},
       {:stream_data, "~> 0.4", only: [:test, :test_dev]},
       {:benchee, "~> 1.0", only: :dev},
@@ -64,6 +64,7 @@ defmodule Hallux.Mixfile do
       groups_for_modules: [
         "Data Structures": [
           Hallux.IntervalMap,
+          Hallux.OrderedMap,
           Hallux.Seq
         ],
         Protocols: [
@@ -89,6 +90,10 @@ defmodule Hallux.Mixfile do
           Hallux.Internal.Node,
           Hallux.Internal.Node.Node2,
           Hallux.Internal.Node.Node3,
+          Hallux.Internal.OrderedHashBounds,
+          Hallux.Internal.OrderedHashBounds.MinOrder,
+          Hallux.Internal.OrderedHashBounds.Order,
+          Hallux.Internal.OrderedHashBounds.Value,
           Hallux.Internal.Size,
           Hallux.Internal.Split
         ]
@@ -99,6 +104,7 @@ defmodule Hallux.Mixfile do
         Hallux.Internal.FingerTree,
         Hallux.Internal.IntInterval,
         Hallux.Internal.Node,
+        Hallux.Internal.OrderedHashBounds,
         Hallux.Protocol
       ]
     ]
