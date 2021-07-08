@@ -51,6 +51,32 @@ iex(2)> Hallux.IntervalMap.interval_match(im, {8, 9})
 [{{4, 10}, :b}, {{9, 15}, :c}]
 ```
 
+## `Hallux.OrderedMap`
+
+An ordered sequence that is also a hashmap on values.
+
+- Items consist of a value and an order key. Values are hashed.
+- The sequence is always sorted by the order, new items are inserted
+  at their order position.
+- Values can be retrieved in O(log(n)) if addressed by order key.
+- All keys to an item can be retrieved in O(m*log(n)), where m is the
+  number of occurrences of that value. (Currently, hash collisions are
+  not checked.)
+
+### Examples
+
+```elixir
+iex(1)> om1 = Hallux.OrderedMap.new([b: 10, c: 20, b: 15, c: 7])
+#HalluxOrderedMap<[b: 10, b: 15, c: 20, c: 7]>
+iex(2)> om2 = Hallux.OrderedMap.insert(om1, :a, 50)
+#HalluxOrderedMap<[a: 50, b: 10, b: 15, c: 20, c: 7]>
+iex(3)> Hallux.OrderedMap.get(om2, :b)
+#HalluxOrderedMap<[b: 10, b: 15]>
+iex(4)> Hallux.OrderedMap.split(om2, :b)
+{#HalluxOrderedMap<[a: 50]>, #HalluxOrderedMap<[b: 10, b: 15]>,
+ #HalluxOrderedMap<[c: 20, c: 7]>}
+```
+
 ## Installation
 
 Add `hallux` to your list of dependencies in `mix.exs`:
@@ -58,7 +84,7 @@ Add `hallux` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:hallux, "~> 1.1.0"}
+    {:hallux, "~> 1.2.0"}
   ]
 end
 ```
