@@ -86,6 +86,9 @@ defmodule Hallux.IntervalMap do
 
   ## Examples
 
+      iex> interval_search(new(), {20, 30})
+      {:error, :not_found}
+
       iex> im = Enum.into([
       ...>     {{1, 2}, :a},
       ...>     {{4, 10}, :b},
