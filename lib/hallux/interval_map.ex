@@ -86,6 +86,9 @@ defmodule Hallux.IntervalMap do
 
   ## Examples
 
+      iex> interval_search(new(), {20, 30})
+      {:error, :not_found}
+
       iex> im = Enum.into([
       ...>     {{1, 2}, :a},
       ...>     {{4, 10}, :b},
@@ -105,6 +108,8 @@ defmodule Hallux.IntervalMap do
   @spec interval_search(t(val), {integer(), integer()}) ::
           {:ok, {integer(), integer()}, val} | {:error, :not_found}
         when val: value
+  def interval_search(%__MODULE__{t: %Empty{}}, _), do: {:error, :not_found}
+
   def interval_search(%__MODULE__{t: t = %_{monoid: mo}}, {low_i, high_i}) do
     %Split{x: %Interval{low: low_x, high: high_x, payload: payload}} =
       FingerTree.split_tree(&at_least(low_i, &1), Monoid.mempty(mo), t)
