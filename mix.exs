@@ -35,7 +35,7 @@ defmodule Hallux.Mixfile do
       {:dialyxir, "~> 1.0", only: :dev, runtime: false},
       {:stream_data, "~> 0.4", only: [:test, :test_dev]},
       {:benchee, "~> 1.0", only: :dev},
-      {:credo, "~> 1.5.6", only: [:dev, :test_dev], runtime: false}
+      {:credo, "~> 1.6", only: [:dev, :test_dev], runtime: false}
     ]
   end
 
